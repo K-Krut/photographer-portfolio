@@ -11,72 +11,107 @@
     "pl": "Fotografia eventowa i BTS"
   },
   "description": {
-    "en": "Event and behind-the-scenes photography in and around Kraków: film sets, conferences, concerts and parties.",
-    "pl": "Fotografia eventowa i zdjęcia zza kulis w Krakowie i okolicach: plany filmowe, konferencje, koncerty i imprezy."
+    "en": "Event and behind-the-scenes photography in and around Kraków: concerts, film sets and wedding parties.",
+    "pl": "Fotografia eventowa i zza kulis w Krakowie i okolicach: koncerty, plany filmowe i wesela."
   },
   "cover": "01.jpg",
   "photos": [
     {
       "file": "01.jpg",
       "alt": {
-        "en": "Camera operator filming a dancer in a blue studio lit by vertical light tubes",
-        "pl": "Operator filmujący tancerza w niebieskim studiu oświetlonym pionowymi świetlówkami"
+        "en": "Fan with arms raised in front of a guitarist on a smoky stage in golden light",
+        "pl": "Fan z uniesionymi rękami przed gitarzystą na zadymionej scenie w złotym świetle"
       }
     },
     {
       "file": "02.jpg",
       "alt": {
-        "en": "Camera on a tripod with its monitor showing a band playing in a dim studio",
-        "pl": "Kamera na statywie, na której monitorze widać zespół grający w przyciemnionym studiu"
+        "en": "Film crew setting up cameras and lights on a set in an old warehouse",
+        "pl": "Ekipa filmowa ustawiająca kamery i światła na planie w starym magazynie"
       }
     },
     {
       "file": "03.jpg",
       "alt": {
-        "en": "Electronic clapperboard held up in front of two people on a white film set",
-        "pl": "Elektroniczny klaps trzymany przed dwiema osobami na białym planie filmowym"
+        "en": "Black and white: the bride and groom's first dance under spotlights",
+        "pl": "Czarno-biały kadr: pierwszy taniec pary młodej w świetle reflektorów"
       }
     },
     {
       "file": "04.jpg",
       "alt": {
-        "en": "Hands holding a film clapperboard against a desert landscape and a cloudy sky",
-        "pl": "Dłonie trzymające filmowy klaps na tle pustynnego krajobrazu i zachmurzonego nieba"
+        "en": "Concert under a round lighting rig, the crowd lit in red",
+        "pl": "Koncert pod okrągłą konstrukcją oświetleniową, tłum w czerwonym świetle"
       }
     },
     {
       "file": "05.jpg",
       "alt": {
-        "en": "Audience listening in a dark conference hall with a perforated ceiling",
-        "pl": "Publiczność słuchająca w ciemnej sali konferencyjnej z perforowanym sufitem"
+        "en": "Bride in a backless dress dancing with her arm in the air among wedding guests",
+        "pl": "Panna młoda w sukni z odkrytymi plecami tańcząca z uniesioną ręką wśród gości weselnych"
       }
     },
     {
       "file": "06.jpg",
       "alt": {
-        "en": "Wide view of a speaker on a central stage surrounded by a full conference audience and large screens",
-        "pl": "Szerokie ujęcie prelegenta na centralnej scenie otoczonego pełną salą konferencyjną i dużymi ekranami"
+        "en": "Black and white: singer and band on a stage filled with smoke and backlight",
+        "pl": "Czarno-biały kadr: wokalista i zespół na scenie pełnej dymu i światła z tyłu"
       }
     },
     {
       "file": "07.jpg",
       "alt": {
-        "en": "Band playing on a smoky stage in blue and orange concert light",
-        "pl": "Zespół grający na zadymionej scenie w niebieskim i pomarańczowym świetle koncertowym"
+        "en": "Camera crew on a dim attic set lit by a warm lamp",
+        "pl": "Ekipa z kamerą na przyciemnionym planie na poddaszu, oświetlonym ciepłą lampą"
       }
     },
     {
       "file": "08.jpg",
       "alt": {
-        "en": "Friends clinking glasses of red and white wine, seen from above",
-        "pl": "Przyjaciele stukający się kieliszkami czerwonego i białego wina, ujęci z góry"
+        "en": "Camera operator checking the monitor of a handheld camera next to an actor",
+        "pl": "Operator sprawdzający monitor kamery z ręki obok aktora"
       }
     },
     {
       "file": "09.jpg",
       "alt": {
-        "en": "Crowd gathered at an outdoor party under strings of lights",
-        "pl": "Tłum zebrany na imprezie plenerowej pod girlandami światełek"
+        "en": "Black and white: dancers blurred in motion on a crowded dance floor",
+        "pl": "Czarno-biały kadr: tancerze rozmyci w ruchu na zatłoczonym parkiecie"
+      }
+    },
+    {
+      "file": "10.jpg",
+      "alt": {
+        "en": "Camera operator in a stabiliser vest lifting a cinema camera, an assistant beside him",
+        "pl": "Operator w kamizelce stabilizatora podnoszący kamerę filmową, obok asystent"
+      }
+    },
+    {
+      "file": "11.jpg",
+      "alt": {
+        "en": "Crowd with raised hands in front of a stage glowing in orange light",
+        "pl": "Tłum z uniesionymi rękami przed sceną w pomarańczowym świetle"
+      }
+    },
+    {
+      "file": "12.jpg",
+      "alt": {
+        "en": "Black and white: cinema camera on a crane and a crew member on a dark set",
+        "pl": "Czarno-biały kadr: kamera filmowa na wysięgniku i członek ekipy na ciemnym planie"
+      }
+    },
+    {
+      "file": "13.jpg",
+      "alt": {
+        "en": "Laughing man dipping his partner on a crowded dance floor",
+        "pl": "Roześmiany mężczyzna przechylający partnerkę w tańcu na zatłoczonym parkiecie"
+      }
+    },
+    {
+      "file": "14.jpg",
+      "alt": {
+        "en": "Black and white: film crew gathered around the camera between takes",
+        "pl": "Czarno-biały kadr: ekipa filmowa zebrana wokół kamery między ujęciami"
       }
     }
   ]
