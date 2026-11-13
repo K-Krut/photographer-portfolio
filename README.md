@@ -43,10 +43,10 @@ To enable booking locally, copy `.env.example` to `.env.local` and fill in the v
 
 | Guide | For |
 | --- | --- |
-| [content/README.md](content/README.md) | Editing collections by hand (in Russian) |
+| [content/README.md](content/README.md) | Editing collections by hand |
 | [GUIDE.md](GUIDE.md) | Running the site: bookings and the calendar, portfolio collections, publishing changes |
 | [content/IMPORT.md](content/IMPORT.md) | Instructions for an AI agent importing collections from a photo archive |
-| [content/BOOKING.md](content/BOOKING.md) | Setting up booking: Google Calendar, Gmail, Vercel variables (in Russian) |
+| [content/BOOKING.md](content/BOOKING.md) | Setting up booking: Google Calendar, Gmail, Vercel variables |
 | `lib/content.ts` | All other texts: about, prices, contacts, interface, SEO |
 | [content/CREDITS.md](content/CREDITS.md) | Sources and license of the photos in `public/photos/` |
 

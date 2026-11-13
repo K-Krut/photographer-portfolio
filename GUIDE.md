@@ -8,7 +8,7 @@ This guide is for the photographer and anyone who runs the site day to day. It c
 | Add, change or remove a photo collection | [Portfolio collections](#portfolio-collections) |
 | Change prices, the about text or contacts | [Other texts](#other-texts) |
 | Get a change onto the live site, or undo one | [Publishing changes](#publishing-changes) |
-| Set up booking for the first time (Google Cloud, calendars, Gmail, Vercel) | [content/BOOKING.md](content/BOOKING.md), in Russian |
+| Set up booking for the first time (Google Cloud, calendars, Gmail, Vercel) | [content/BOOKING.md](content/BOOKING.md) |
 
 Developers and AI agents follow [AGENTS.md](AGENTS.md) instead.
 

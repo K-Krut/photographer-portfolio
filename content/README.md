@@ -1,14 +1,14 @@
-# Коллекции фотографий
+# Photo collections
 
-Каждая коллекция — это один файл `content/collections/*.json` и одна папка с фотографиями `public/photos/<slug>/`.
+Each collection is one file `content/collections/*.json` and one folder of photos `public/photos/<slug>/`.
 
-`<slug>` — короткое имя латиницей из поля `"slug"` внутри файла. Оно задаёт адрес страницы и папку с фотографиями: `"slug": "wedding"` → страницы `/en/portfolio/wedding` и `/pl/portfolio/wedding`, фотографии в `public/photos/wedding/`. Только строчные латинские буквы, цифры и одиночные дефисы (`family`, `wedding-2025`). У двух коллекций не может быть одинакового `slug`.
+`<slug>` is a short Latin name from the `"slug"` field inside the file. It sets the page address and the photo folder: `"slug": "wedding"` → the pages `/en/portfolio/wedding` and `/pl/portfolio/wedding`, photos in `public/photos/wedding/`. Only lowercase Latin letters, digits and single hyphens (`family`, `wedding-2025`). Two collections cannot share a `slug`.
 
-Имя файла может быть любым (`wedding.json`, `Свадьбы 2025.json`) — на сайт оно не влияет. Файл можно спокойно переименовать: адрес страницы останется прежним. Чтобы не путаться, удобно называть файл так же, как `slug`.
+The file name can be anything (`wedding.json`, `Weddings 2025.json`); it does not affect the site. The file can be renamed freely and the page address stays the same. To avoid confusion, it is convenient to name the file after the `slug`.
 
-Размеры фотографий (ширину и высоту) писать не нужно — сайт сам читает их из файлов.
+Photo sizes (width and height) do not need to be written down: the site reads them from the files.
 
-## Пример файла
+## Example file
 
 ```json
 {
@@ -28,32 +28,32 @@
 }
 ```
 
-| Поле | Что это |
+| Field | What it is |
 | --- | --- |
-| `slug` | Обязательно. Адрес коллекции и имя папки с фотографиями: `"slug": "personal"` → `/en/portfolio/personal` и `public/photos/personal/`. |
-| `redirectFrom` | Необязательно. Список старых адресов коллекции, например `["behind-the-scenes"]`. Кто откроет старый адрес, попадёт на текущий (постоянный редирект 301 — Google тоже перенесёт страницу на новый адрес). См. «Как сменить адрес коллекции». |
-| `order` | Число — место коллекции в списке (1, 2, 3…). Меньше — выше. При одинаковых числах порядок по `slug`. |
-| `featured` | `true` — коллекция показывается на главной странице (максимум 4 первых по `order`). Можно не писать — тогда `false`. Если ни одна коллекция не отмечена, на главной показываются 4 первые. |
-| `name` | Название коллекции на английском (`en`) и польском (`pl`). Оба обязательны. |
-| `description` | Описание коллекции для поисковиков на `en` и `pl`. На сайте не показывается — попадает в описание страницы в Google и в превью ссылки в мессенджерах и соцсетях. Лучше 120–160 символов, с городом и типом съёмки. Можно не писать — тогда описание соберётся автоматически из названия; если поле есть, нужны оба языка. |
-| `cover` | Имя файла обложки — одна из фотографий из `photos`. Можно не писать — тогда обложкой будет первая фотография. |
-| `photos` | Список фотографий. Порядок в списке = порядок на странице. |
-| `photos[].file` | Имя файла в папке `public/photos/<slug>/`. |
-| `photos[].alt` | Описание фотографии на `en` и `pl` (для незрячих посетителей и поисковиков). Оба обязательны. |
+| `slug` | Required. The collection's address and the name of its photo folder: `"slug": "personal"` → `/en/portfolio/personal` and `public/photos/personal/`. |
+| `redirectFrom` | Optional. A list of the collection's old addresses, for example `["behind-the-scenes"]`. Anyone who opens an old address lands on the current one (a permanent 301 redirect, so Google moves the page to the new address too). See "Changing a collection's address". |
+| `order` | A number: the collection's place in the list (1, 2, 3…). Lower comes first. Equal numbers are ordered by `slug`. |
+| `featured` | `true` shows the collection on the landing page (at most the first 4 by `order`). Can be left out, which means `false`. If no collection is marked, the landing page shows the first 4. |
+| `name` | The collection's name in English (`en`) and Polish (`pl`). Both are required. |
+| `description` | The collection's description for search engines, in `en` and `pl`. It is not shown on the site: it becomes the page description in Google and the link preview in messengers and social networks. 120–160 characters work best, with the city and the type of shoot. Can be left out, and the description is then built from the name; if the field is present, both languages are required. |
+| `cover` | The file name of the cover, one of the photos in `photos`. Can be left out, and the first photo becomes the cover. |
+| `photos` | The list of photos. The order in the list is the order on the page. |
+| `photos[].file` | The file name in the `public/photos/<slug>/` folder. |
+| `photos[].alt` | The photo's description in `en` and `pl` (for blind visitors and search engines). Both are required. |
 
-## Как добавить коллекцию
+## Adding a collection
 
-1. Придумать `slug` (например `wedding`) и положить фотографии в новую папку `public/photos/<slug>/` (например `public/photos/wedding/01.jpg`).
-2. Создать файл в `content/collections/` (например `wedding.json`) по примеру выше и вписать в него `"slug": "wedding"`.
-3. Указать `order` и, если нужно на главную, `"featured": true`.
-4. Собрать сайт (`npm run build`). Страница коллекции, карточка на странице «Portfolio» и запись в sitemap появятся сами.
+1. Pick a `slug` (for example `wedding`) and put the photos into a new folder `public/photos/<slug>/` (for example `public/photos/wedding/01.jpg`).
+2. Create a file in `content/collections/` (for example `wedding.json`) following the example above, with `"slug": "wedding"` in it.
+3. Set `order` and, to show it on the landing page, `"featured": true`.
+4. Build the site (`npm run build`). The collection page, its card on the "Portfolio" page and its sitemap entry appear on their own.
 
-## Как сменить адрес коллекции
+## Changing a collection's address
 
-Старый адрес мог уже попасть в Google, в закладки или в пересланные ссылки. Чтобы они не вели на страницу 404, старый адрес переносится в `redirectFrom`:
+The old address may already be in Google, in bookmarks or in shared links. To keep them from leading to a 404 page, the old address moves to `redirectFrom`:
 
-1. Переименовать папку с фотографиями: `public/photos/bts/` → `public/photos/behind-the-scenes/`.
-2. В файле коллекции поменять `slug` на новый и добавить старый в `redirectFrom`:
+1. Rename the photo folder: `public/photos/bts/` → `public/photos/behind-the-scenes/`.
+2. In the collection file, change `slug` to the new one and add the old one to `redirectFrom`:
 
    ```json
    {
@@ -63,28 +63,28 @@
    }
    ```
 
-3. Если адрес меняется не первый раз, старые адреса из `redirectFrom` не удалять — просто дописать ещё один: `["bts", "backstage"]`.
+3. If the address is changing again, do not remove the old addresses from `redirectFrom`; just add another one: `["bts", "backstage"]`.
 
-Теперь `/en/portfolio/bts` и `/pl/portfolio/bts` открывают `/en/portfolio/behind-the-scenes` и `/pl/portfolio/behind-the-scenes`. Старый адрес нельзя отдать другой коллекции, пока он стоит в `redirectFrom`: адрес либо живой, либо перенаправляет — сборка подскажет, если они пересеклись.
+Now `/en/portfolio/bts` and `/pl/portfolio/bts` open `/en/portfolio/behind-the-scenes` and `/pl/portfolio/behind-the-scenes`. An old address cannot be given to another collection while it is in `redirectFrom`: an address is either live or a redirect, and the build tells you if they clash.
 
-Переименовать сам файл `.json` можно когда угодно — для этого ничего делать не нужно.
+The `.json` file itself can be renamed at any time; nothing else needs to be done for that.
 
-## Как добавить, убрать или переставить фотографии
+## Adding, removing or reordering photos
 
-- Добавить: положить файл в папку коллекции и дописать строку в `photos`.
-- Убрать: удалить строку из `photos` (файл в папке можно оставить или удалить). Если это была обложка — поменять `cover`.
-- Переставить: поменять строки местами в `photos`.
-- Сменить обложку: вписать в `cover` имя другого файла из `photos`.
+- Add: put the file into the collection folder and add a line to `photos`.
+- Remove: delete the line from `photos` (the file in the folder can stay or go). If it was the cover, change `cover`.
+- Reorder: swap the lines in `photos`.
+- Change the cover: put the name of another file from `photos` into `cover`.
 
-Удобно редактировать в любом редакторе кода (VS Code, PyCharm) — он подсвечивает ошибки в JSON. Частые ошибки: забытая запятая между строками, лишняя запятая после последней строки, кавычки «ёлочки» вместо `"`.
+Any code editor (VS Code, PyCharm) is convenient for editing: it highlights JSON mistakes. Common mistakes: a missing comma between lines, an extra comma after the last line, typographic quotes (`“ ”` or `« »`) instead of `"`.
 
-## Просмотр изменений до сборки
+## Previewing changes before a build
 
-`npm run dev` запускает сайт на компьютере (http://localhost:3000). Перезапускать его после правок не нужно: новые, изменённые, переименованные и удалённые файлы коллекций и фотографии подхватываются при следующем открытии или обновлении страницы. Если в файле ошибка, вместо страницы появится тот же список проблем, что и при сборке.
+`npm run dev` runs the site on your computer (http://localhost:3000). It does not need a restart after edits: new, changed, renamed and deleted collection files and photos are picked up the next time a page is opened or reloaded. If a file has a mistake, the page is replaced with the same list of problems the build shows.
 
-## Ошибки при сборке
+## Build errors
 
-Если в файлах что-то не так, сборка останавливается и показывает список проблем — каждая с именем файла и полем:
+If something is wrong in the files, the build stops and shows a list of problems, each with the file name and the field:
 
 ```
 Error: Invalid collection content (4 problems):
@@ -94,38 +94,36 @@ Error: Invalid collection content (4 problems):
   - content/collections/wedding.json: "cover": "10.jpg" is not in "photos"
 ```
 
-`photos[2]` — это третья фотография в списке (счёт с нуля), `redirectFrom[0]` — первый старый адрес.
+`photos[2]` is the third photo in the list (counting from zero), and `redirectFrom[0]` is the first old address.
 
-Пока `slug` пустой, неверный или занят, фотографии коллекции не проверяются (неизвестно, в какой папке их искать) — после исправления `slug` сборка может показать новые ошибки про фотографии.
+While the `slug` is empty, invalid or taken, the collection's photos are not checked (it is unknown which folder to look in), so after fixing the `slug` the build may show new errors about the photos.
 
-Пока `slug` пустой, неверный или занят, фотографии коллекции не проверяются (неизвестно, в какой папке их искать) — после исправления `slug` сборка может показать новые ошибки про фотографии.
-
-| Сообщение | Что значит и как исправить |
+| Message | What it means and how to fix it |
 | --- | --- |
-| `invalid JSON: ... (line 7 column 1)` | Синтаксическая ошибка в файле — проверить запятые и кавычки рядом с указанной строкой. |
-| `"slug" is missing or empty` | В файле нет `slug` — дописать, например `"slug": "wedding"`. |
-| `"slug": "..." is not a valid address` | В `slug` есть заглавные буквы, пробелы, кириллица или двойные дефисы — оставить только строчную латиницу, цифры и одиночные дефисы. |
-| `"slug": "..." is already used by ...` | Такой `slug` уже у другой коллекции (её файл указан в сообщении) — выбрать другой. |
-| `"slug": "..." is also in "redirectFrom" of ...` | Этот адрес — старый адрес другой коллекции (файл указан). Выбрать другой `slug` или убрать адрес из `redirectFrom` той коллекции. |
-| `"redirectFrom" must be a list of old addresses` | `redirectFrom` написан не списком — нужны квадратные скобки: `["old-slug"]`. |
-| `"redirectFrom[N]": ... is not a valid address` | Старый адрес записан с ошибкой — те же правила, что и для `slug`. |
-| `"redirectFrom[N]": "..." is listed more than once` | Один и тот же старый адрес указан дважды. |
-| `"redirectFrom[N]": "..." is already in "redirectFrom" of ...` | Этот старый адрес уже перенаправляется на другую коллекцию (файл указан) — оставить его только в одной. |
-| `"redirectFrom[N]": "..." is this collection's own "slug"` | В `redirectFrom` записан текущий адрес коллекции — убрать его оттуда. |
-| `"order" must be a number` | `order` отсутствует или написан не числом (например `"1"` в кавычках) — написать `"order": 1`. |
-| `"featured" must be true or false` | Написать `true` или `false` без кавычек. |
-| `"name.en" is missing or empty` / `"name.pl" ...` | Нет названия на одном из языков. |
-| `"photos[N].alt.pl" is missing or empty` | У фотографии нет описания на одном из языков. |
-| `"photos" must be a non-empty list` | В коллекции нет ни одной фотографии. |
-| `"photos[N].file": ... does not exist` | Файла с таким именем нет в папке `public/photos/<slug>/` — проверить имя и регистр букв (`01.JPG` ≠ `01.jpg`) и что папка называется так же, как `slug`. |
-| `"photos[N].file": "..." is listed more than once` | Одна и та же фотография указана дважды. |
-| `"photos[N].file" must be a plain file name` | В `file` указан путь — нужно только имя файла, без папок. |
-| `cannot read image size of ...` | Файл повреждён или это не изображение. |
-| `"cover": "..." is not in "photos"` | Обложка не входит в список `photos`. |
-| `no collection files (*.json) found` | В `content/collections/` нет ни одной коллекции. |
+| `invalid JSON: ... (line 7 column 1)` | A syntax error in the file: check the commas and quotes near the given line. |
+| `"slug" is missing or empty` | The file has no `slug`: add one, for example `"slug": "wedding"`. |
+| `"slug": "..." is not a valid address` | The `slug` has capital letters, spaces, non-Latin letters or double hyphens: keep only lowercase Latin letters, digits and single hyphens. |
+| `"slug": "..." is already used by ...` | Another collection already has this `slug` (its file is named in the message): pick a different one. |
+| `"slug": "..." is also in "redirectFrom" of ...` | This address is an old address of another collection (its file is named). Pick a different `slug` or remove the address from that collection's `redirectFrom`. |
+| `"redirectFrom" must be a list of old addresses` | `redirectFrom` is not written as a list: it needs square brackets, `["old-slug"]`. |
+| `"redirectFrom[N]": ... is not a valid address` | The old address has a mistake: the same rules as for `slug` apply. |
+| `"redirectFrom[N]": "..." is listed more than once` | The same old address is listed twice. |
+| `"redirectFrom[N]": "..." is already in "redirectFrom" of ...` | This old address already redirects to another collection (its file is named): keep it in only one. |
+| `"redirectFrom[N]": "..." is this collection's own "slug"` | `redirectFrom` contains the collection's current address: remove it from there. |
+| `"order" must be a number` | `order` is missing or is not a number (for example `"1"` in quotes): write `"order": 1`. |
+| `"featured" must be true or false` | Write `true` or `false` without quotes. |
+| `"name.en" is missing or empty` / `"name.pl" ...` | The name is missing in one of the languages. |
+| `"photos[N].alt.pl" is missing or empty` | A photo has no description in one of the languages. |
+| `"photos" must be a non-empty list` | The collection has no photos. |
+| `"photos[N].file": ... does not exist` | There is no file with that name in `public/photos/<slug>/`: check the name and the letter case (`01.JPG` ≠ `01.jpg`) and that the folder is named the same as the `slug`. |
+| `"photos[N].file": "..." is listed more than once` | The same photo is listed twice. |
+| `"photos[N].file" must be a plain file name` | `file` contains a path: only the file name is needed, without folders. |
+| `cannot read image size of ...` | The file is damaged or is not an image. |
+| `"cover": "..." is not in "photos"` | The cover is not in the `photos` list. |
+| `no collection files (*.json) found` | There are no collections in `content/collections/`. |
 
-Остальные тексты сайта (о себе, цены, контакты, соцсети, тексты интерфейса и SEO) по-прежнему в `lib/content.ts`.
+All other site texts (about, prices, contacts, social links, interface texts and SEO) are in `lib/content.ts`.
 
-Онлайн-запись на съёмку (Google Cloud, Google Календарь, Gmail, Vercel) настраивается по пошаговой инструкции в [BOOKING.md](BOOKING.md).
+Online booking (Google Cloud, Google Calendar, Gmail, Vercel) is set up with the step-by-step guide in [BOOKING.md](BOOKING.md).
 
 Adding, changing or removing collections with an AI agent from a photo archive: see [GUIDE.md](../GUIDE.md) (for people) and [IMPORT.md](IMPORT.md) (for agents).

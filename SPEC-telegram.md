@@ -18,7 +18,7 @@ Messages go to a single chat id from configuration through the Bot API `sendMess
 
 ## Setup
 
-The Russian setup guide `content/BOOKING.md` already describes creating the bot with @BotFather, pressing Start, and finding the chat id. It is checked for accuracy and kept.
+The setup guide `content/BOOKING.md` already describes creating the bot with @BotFather, pressing Start, and finding the chat id. It is checked for accuracy and kept.
 
 # Scenarios
 
