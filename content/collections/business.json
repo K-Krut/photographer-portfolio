@@ -7,65 +7,93 @@
     "pl": "Sesje biznesowe"
   },
   "description": {
-    "en": "Business portraits in Kraków: clean studio headshots, office portraits by the window and confident personal-brand photos.",
-    "pl": "Portrety biznesowe w Krakowie: studyjne zdjęcia wizerunkowe, portrety w biurze przy oknie i pewne siebie zdjęcia do marki osobistej."
+    "en": "Personal-brand portraits in Kraków for creative people: artists, chefs and makers at work and in the studio.",
+    "pl": "Portrety do marki osobistej w Krakowie dla ludzi kreatywnych: artyści, szefowie kuchni i twórcy przy pracy i w studiu."
   },
   "cover": "01.jpg",
   "photos": [
     {
       "file": "01.jpg",
       "alt": {
-        "en": "Man in black glasses, a navy blazer and a white shirt by a bright office window",
-        "pl": "Mężczyzna w czarnych okularach, granatowej marynarce i białej koszuli przy jasnym oknie biura"
+        "en": "Black and white portrait of a woman with short wavy hair resting her chin on her hand",
+        "pl": "Czarno-biały portret kobiety z krótkimi falowanymi włosami, z brodą opartą na dłoni"
       }
     },
     {
       "file": "02.jpg",
       "alt": {
-        "en": "Smiling woman in a grey blazer sitting on a window ledge with a laptop, an orange wall beside her",
-        "pl": "Uśmiechnięta kobieta w szarej marynarce siedząca na parapecie z laptopem, obok pomarańczowa ściana"
+        "en": "Black and white portrait of a young person with curly hair on a black background",
+        "pl": "Czarno-biały portret młodej osoby z kręconymi włosami na czarnym tle"
       }
     },
     {
       "file": "03.jpg",
       "alt": {
-        "en": "Man in a dark suit and burgundy tie with his arms crossed, standing in the evening shade",
-        "pl": "Mężczyzna w ciemnym garniturze i bordowym krawacie ze skrzyżowanymi rękami, stojący w wieczornym cieniu"
+        "en": "Smiling sculptor with a paintbrush at her worktable, plaster busts behind her",
+        "pl": "Uśmiechnięta rzeźbiarka z pędzlem przy stole roboczym, za nią gipsowe popiersia"
       }
     },
     {
       "file": "04.jpg",
       "alt": {
-        "en": "Woman with her hair in a bun and a black turtleneck holding her arm, looking aside in a light colonnade",
-        "pl": "Kobieta z włosami upiętymi w kok, w czarnym golfie, trzymająca się za ramię i patrząca w bok w jasnej kolumnadzie"
+        "en": "Black and white: man in a black embroidered shirt with his arms crossed on a white background",
+        "pl": "Czarno-biały kadr: mężczyzna w czarnej haftowanej koszuli ze skrzyżowanymi rękami na białym tle"
       }
     },
     {
       "file": "05.jpg",
       "alt": {
-        "en": "Man with a grey beard in a white T-shirt looking aside on a black backdrop",
-        "pl": "Mężczyzna z siwą brodą w białym T-shircie patrzący w bok na czarnym tle"
+        "en": "Black and white: chef in a white cap and jacket looking down in a brick kitchen",
+        "pl": "Czarno-biały kadr: kucharz w białej czapce i bluzie patrzący w dół w kuchni z cegły"
       }
     },
     {
       "file": "06.jpg",
       "alt": {
-        "en": "Headshot of a man with tousled hair in a navy sweater looking into the camera on a grey backdrop",
-        "pl": "Portret wizerunkowy mężczyzny z rozwichrzonymi włosami w granatowym swetrze, patrzącego w obiektyw na szarym tle"
+        "en": "Woman wrapped in an ochre scarf against a dark evening sky",
+        "pl": "Kobieta otulona ochrową chustą na tle ciemnego wieczornego nieba"
       }
     },
     {
       "file": "07.jpg",
       "alt": {
-        "en": "Smiling woman with long dark hair in a black top on a light backdrop",
-        "pl": "Uśmiechnięta kobieta z długimi ciemnymi włosami w czarnej bluzce na jasnym tle"
+        "en": "Young cook in a white jacket, grey apron and head wrap looking up from her work in a busy kitchen",
+        "pl": "Młoda kucharka w białej bluzie, szarym fartuchu i chuście na głowie odrywająca wzrok od pracy w ruchliwej kuchni"
       }
     },
     {
       "file": "08.jpg",
       "alt": {
-        "en": "Young man in a dark collarless shirt looking off to the side on a pale grey backdrop",
-        "pl": "Młody mężczyzna w ciemnej koszuli ze stójką patrzący w bok na jasnoszarym tle"
+        "en": "Young woman holding a folder among wooden easels in an art studio",
+        "pl": "Młoda kobieta z teczką wśród drewnianych sztalug w pracowni plastycznej"
+      }
+    },
+    {
+      "file": "09.jpg",
+      "alt": {
+        "en": "Artist in a beanie painting a large colourful canvas in his studio",
+        "pl": "Artysta w czapce malujący duże kolorowe płótno w swojej pracowni"
+      }
+    },
+    {
+      "file": "10.jpg",
+      "alt": {
+        "en": "Painter with his arms crossed among his canvases and easels",
+        "pl": "Malarz ze skrzyżowanymi rękami wśród swoich płócien i sztalug"
+      }
+    },
+    {
+      "file": "11.jpg",
+      "alt": {
+        "en": "Chef in a white jacket and grey apron with his arms crossed in a restaurant kitchen",
+        "pl": "Szef kuchni w białej bluzie i szarym fartuchu ze skrzyżowanymi rękami w kuchni restauracji"
+      }
+    },
+    {
+      "file": "12.jpg",
+      "alt": {
+        "en": "Illustrator working at a desk in a dark studio, sketches pinned to the wall",
+        "pl": "Ilustrator pracujący przy biurku w ciemnej pracowni, na ścianie przypięte szkice"
       }
     }
   ]
