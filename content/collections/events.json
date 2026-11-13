@@ -1,0 +1,83 @@
+{
+  "slug": "events",
+  "redirectFrom": [
+    "bts",
+    "behind-the-scenes"
+  ],
+  "order": 3,
+  "featured": true,
+  "name": {
+    "en": "Event Photography and BTS",
+    "pl": "Fotografia eventowa i BTS"
+  },
+  "description": {
+    "en": "Event and behind-the-scenes photography in and around Kraków: film sets, conferences, concerts and parties.",
+    "pl": "Fotografia eventowa i zdjęcia zza kulis w Krakowie i okolicach: plany filmowe, konferencje, koncerty i imprezy."
+  },
+  "cover": "01.jpg",
+  "photos": [
+    {
+      "file": "01.jpg",
+      "alt": {
+        "en": "Camera operator filming a dancer in a blue studio lit by vertical light tubes",
+        "pl": "Operator filmujący tancerza w niebieskim studiu oświetlonym pionowymi świetlówkami"
+      }
+    },
+    {
+      "file": "02.jpg",
+      "alt": {
+        "en": "Camera on a tripod with its monitor showing a band playing in a dim studio",
+        "pl": "Kamera na statywie, na której monitorze widać zespół grający w przyciemnionym studiu"
+      }
+    },
+    {
+      "file": "03.jpg",
+      "alt": {
+        "en": "Electronic clapperboard held up in front of two people on a white film set",
+        "pl": "Elektroniczny klaps trzymany przed dwiema osobami na białym planie filmowym"
+      }
+    },
+    {
+      "file": "04.jpg",
+      "alt": {
+        "en": "Hands holding a film clapperboard against a desert landscape and a cloudy sky",
+        "pl": "Dłonie trzymające filmowy klaps na tle pustynnego krajobrazu i zachmurzonego nieba"
+      }
+    },
+    {
+      "file": "05.jpg",
+      "alt": {
+        "en": "Audience listening in a dark conference hall with a perforated ceiling",
+        "pl": "Publiczność słuchająca w ciemnej sali konferencyjnej z perforowanym sufitem"
+      }
+    },
+    {
+      "file": "06.jpg",
+      "alt": {
+        "en": "Wide view of a speaker on a central stage surrounded by a full conference audience and large screens",
+        "pl": "Szerokie ujęcie prelegenta na centralnej scenie otoczonego pełną salą konferencyjną i dużymi ekranami"
+      }
+    },
+    {
+      "file": "07.jpg",
+      "alt": {
+        "en": "Band playing on a smoky stage in blue and orange concert light",
+        "pl": "Zespół grający na zadymionej scenie w niebieskim i pomarańczowym świetle koncertowym"
+      }
+    },
+    {
+      "file": "08.jpg",
+      "alt": {
+        "en": "Friends clinking glasses of red and white wine, seen from above",
+        "pl": "Przyjaciele stukający się kieliszkami czerwonego i białego wina, ujęci z góry"
+      }
+    },
+    {
+      "file": "09.jpg",
+      "alt": {
+        "en": "Crowd gathered at an outdoor party under strings of lights",
+        "pl": "Tłum zebrany na imprezie plenerowej pod girlandami światełek"
+      }
+    }
+  ]
+}

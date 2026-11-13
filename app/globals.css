@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@custom-variant can-hover (@media (hover: hover) and (pointer: fine));
+
+@custom-variant fan-open {
+  @media (hover: hover) and (pointer: fine) {
+    :where(.group):is(:hover, :focus-visible:not([data-quiet-focus])) & {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  --color-background: #000;
+  --color-foreground: #fff;
+  --color-muted: rgb(255 255 255 / 0.6);
+  --color-skeleton: rgb(23 23 23);
+  --default-transition-duration: var(--motion-duration);
+  --default-transition-timing-function: var(--motion-ease);
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --animate-nudge: nudge 900ms var(--motion-ease) 500ms;
+
+  @keyframes nudge {
+    0%,
+    100% {
+      translate: 0;
+    }
+    40% {
+      translate: 0.5rem;
+    }
+  }
+}
+
+:root {
+  --header-height: 4.25rem;
+  --motion-duration: 250ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-background);
+  scroll-padding-top: var(--header-height);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    height: 100%;
+    overflow-y: auto;
+    scroll-padding-top: var(--header-height);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after,
+  ::backdrop {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+    animation: none !important;
+  }
+}
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+
+  :root:not([data-keyboard]) :focus-visible {
+    outline: none;
+  }
+
+  [data-quiet-focus]:focus-visible {
+    outline: none;
+  }
+}
+
+.viewer {
+  --yarl__color_backdrop: var(--color-background);
+  --yarl__color_button: rgb(255 255 255 / 0.85);
+  --yarl__color_button_active: var(--color-foreground);
+  --yarl__color_button_disabled: rgb(255 255 255 / 0.3);
+  --yarl__button_filter: none;
+  --yarl__counter_filter: none;
+  --yarl__counter_color: var(--color-foreground);
+  --viewer-controls-backdrop: rgb(0 0 0 / 0.6);
+  font-family: var(--font-sans);
+}
+
+.viewer .yarl__toolbar,
+.viewer .yarl__navigation_prev,
+.viewer .yarl__navigation_next {
+  background-color: var(--viewer-controls-backdrop);
+}
+
+.viewer .yarl__toolbar {
+  padding: 0;
+}
+
+.viewer .yarl__button:focus-visible {
+  outline: 2px solid var(--color-foreground);
+  outline-offset: -4px;
+}
+
+.viewer .yarl__counter {
+  margin: 0;
+  padding: 0 1rem;
+  line-height: 3rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.25em;
+  background-color: var(--viewer-controls-backdrop);
+}
+
+.viewer .yarl__slide {
+  container-type: size;
+  isolation: isolate;
+}
+
+.viewer .yarl__slide_image {
+  transition: opacity var(--motion-duration) var(--motion-ease);
+}
+
+.viewer .yarl__button {
+  transition: color var(--motion-duration) var(--motion-ease);
+}
+
+.viewer-skeleton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: min(100cqw, 100cqh * var(--slide-ratio), var(--slide-width));
+  height: min(100cqh, 100cqw / var(--slide-ratio), var(--slide-height));
+  translate: -50% -50%;
+  background-color: var(--color-skeleton);
+  opacity: 0;
+  transition: opacity var(--motion-duration) var(--motion-ease);
+}
+
+.viewer .yarl__slide:has(.yarl__slide_image_loading) .viewer-skeleton {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viewer .yarl__slide:has(.yarl__slide_image_loading) .viewer-skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-group(site-header) {
+  z-index: 100;
+  animation: none;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+::view-transition-old(.page-fade) {
+  animation: page-fade calc(var(--motion-duration) * 0.6) var(--motion-ease) both reverse;
+}
+
+::view-transition-new(.page-fade) {
+  animation: page-fade var(--motion-duration) var(--motion-ease) calc(var(--motion-duration) * 0.4) both;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

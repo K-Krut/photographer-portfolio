@@ -1,0 +1,114 @@
+{
+  "slug": "personal",
+  "order": 1,
+  "featured": true,
+  "name": {
+    "en": "Personal Photosessions",
+    "pl": "Sesje indywidualne"
+  },
+  "description": {
+    "en": "Individual portrait sessions in Kraków: coloured studio light, low-key portraits, golden hour outdoors and shoots among green leaves.",
+    "pl": "Sesje indywidualne w Krakowie: kolorowe światło studyjne, portrety w ciemnej tonacji, plenery w złotej godzinie i wśród zielonych liści."
+  },
+  "cover": "06.jpg",
+  "photos": [
+    {
+      "file": "01.jpg",
+      "alt": {
+        "en": "Woman with slicked-back dark hair in a navy sweatshirt, her face lit in blue against a lilac backdrop",
+        "pl": "Kobieta z zaczesanymi do tyłu ciemnymi włosami w granatowej bluzie, z twarzą w niebieskim świetle na liliowym tle"
+      }
+    },
+    {
+      "file": "02.jpg",
+      "alt": {
+        "en": "Woman in profile with a long braid, lit in magenta and teal against a pale grey backdrop",
+        "pl": "Kobieta z profilu z długim warkoczem, oświetlona na purpurowo i turkusowo na jasnoszarym tle"
+      }
+    },
+    {
+      "file": "03.jpg",
+      "alt": {
+        "en": "Young woman with dark wavy hair in profile, looking up, on a black background",
+        "pl": "Młoda kobieta z ciemnymi falowanymi włosami z profilu, patrząca w górę, na czarnym tle"
+      }
+    },
+    {
+      "file": "04.jpg",
+      "alt": {
+        "en": "Black and white: woman with long dark hair, winged eyeliner and a tassel earring, looking aside",
+        "pl": "Czarno-biały kadr: kobieta z długimi ciemnymi włosami, kreską na powiekach i kolczykiem z frędzlem, patrząca w bok"
+      }
+    },
+    {
+      "file": "05.jpg",
+      "alt": {
+        "en": "Woman with wavy blonde hair in a sheer black blouse, a hand in her hair, on a dark grey backdrop",
+        "pl": "Kobieta z falowanymi blond włosami w prześwitującej czarnej bluzce, z dłonią we włosach, na ciemnoszarym tle"
+      }
+    },
+    {
+      "file": "06.jpg",
+      "alt": {
+        "en": "Woman with dark hair and red lipstick looking into the camera from among large green leaves",
+        "pl": "Kobieta z ciemnymi włosami i czerwoną szminką patrząca w obiektyw spośród dużych zielonych liści"
+      }
+    },
+    {
+      "file": "07.jpg",
+      "alt": {
+        "en": "Young woman with long golden hair touching her head and looking aside, trees behind her in evening sun",
+        "pl": "Młoda kobieta z długimi złocistymi włosami, z dłonią przy głowie, patrząca w bok, za nią drzewa w wieczornym słońcu"
+      }
+    },
+    {
+      "file": "08.jpg",
+      "alt": {
+        "en": "Woman with long red hair looking over her bare shoulder in front of a warm brown wall",
+        "pl": "Kobieta z długimi rudymi włosami patrząca przez odsłonięte ramię na tle ciepłej brązowej ściany"
+      }
+    },
+    {
+      "file": "09.jpg",
+      "alt": {
+        "en": "Woman with curly blonde hair in a sequined top, a row of glowing bulbs beside her in the dark",
+        "pl": "Kobieta z kręconymi blond włosami w bluzce z cekinami, obok w ciemności rząd świecących żarówek"
+      }
+    },
+    {
+      "file": "10.jpg",
+      "alt": {
+        "en": "Close portrait of a woman with red lips, gold hoop earrings and loose strands of hair on a grey backdrop",
+        "pl": "Bliski portret kobiety z czerwonymi ustami, złotymi kolczykami-kołami i luźnymi kosmykami włosów na szarym tle"
+      }
+    },
+    {
+      "file": "11.jpg",
+      "alt": {
+        "en": "Woman in a denim jacket with eyes closed and very long hair flying in the wind, pine trees behind her",
+        "pl": "Kobieta w dżinsowej kurtce z zamkniętymi oczami i bardzo długimi włosami rozwianymi na wietrze, za nią sosny"
+      }
+    },
+    {
+      "file": "12.jpg",
+      "alt": {
+        "en": "Woman in a white off-shoulder dress and white sneakers walking down dark steps under a blue sky",
+        "pl": "Kobieta w białej sukience z odkrytymi ramionami i białych tenisówkach schodząca po ciemnych schodach pod błękitnym niebem"
+      }
+    },
+    {
+      "file": "13.jpg",
+      "alt": {
+        "en": "Woman with voluminous curly hair and bare shoulders looking up, wrapped in soft haze on a pink backdrop",
+        "pl": "Kobieta z bujnymi kręconymi włosami i odsłoniętymi ramionami patrząca w górę, otulona delikatną mgiełką na różowym tle"
+      }
+    },
+    {
+      "file": "14.jpg",
+      "alt": {
+        "en": "Laughing young man in a black hat and hoodie on a dark background",
+        "pl": "Roześmiany młody mężczyzna w czarnym kapeluszu i bluzie z kapturem na ciemnym tle"
+      }
+    }
+  ]
+}

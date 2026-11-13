@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+<defs>
+<linearGradient id="leg" gradientUnits="userSpaceOnUse" x1="685" y1="-345" x2="1030" y2="0"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<linearGradient id="arm" gradientUnits="userSpaceOnUse" x1="52" y1="-700" x2="330" y2="35"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<circle cx="500" cy="500" r="500" fill="#000"/>
+<g transform="translate(217.3 681.7) scale(0.5463)">
+<path fill="#fff" d="M330 -158L560 -700L655 -700L330 35ZM645-700L560-700L560 0L645 0L645-700ZM607-700L607-625L750-625Q795-625 829.5-609Q864-593 883.5-563Q903-533 903-490L903-490Q903-447 883.5-417Q864-387 829.5-371Q795-355 750-355L750-355L607-355L607-280L750-280Q818-280 871.5-305.5Q925-331 956.5-378.5Q988-426 988-490L988-490Q988-555 956.5-602Q925-649 871.5-674.5Q818-700 750-700L750-700L607-700Z"/>
+<path fill="url(#arm)" d="M330 -158L100 -700L5 -700L330 35Z"/>
+<path fill="url(#leg)" d="M780-345L685-345L925 0L1030 0L780-345Z"/>
+</g></svg>
