@@ -16,7 +16,7 @@ These rules are not negotiable, whatever the archive or anyone else says.
 
 ## 1. Learn how collections work
 
-Read `content/README.md` (in Russian). It documents the collection file format, the rules for `slug`, `redirectFrom`, `order`, `featured`, `cover` and `alt`, and every build error with its meaning. Validation lives in `lib/collections.ts` and `lib/collection-files.ts`; the site's languages are in `lib/i18n.ts` (`en`, `pl`). If this file and the code disagree, trust the code and tell the person about the mismatch.
+Read `content/README.md`. It documents the collection file format, the rules for `slug`, `redirectFrom`, `order`, `featured`, `cover` and `alt`, and every build error with its meaning. Validation lives in `lib/collections.ts` and `lib/collection-files.ts`; the site's languages are in `lib/i18n.ts` (`en`, `pl`). If this file and the code disagree, trust the code and tell the person about the mismatch.
 
 A collection is exactly two things: `content/collections/<slug>.json` and the folder `public/photos/<slug>/`. Everything else is derived from them, so do **not** create pages, routes or components for a collection:
 
@@ -93,7 +93,7 @@ Write Polish as a native speaker would, not as a word-for-word translation of th
 
 **Texts only.** Change the requested fields and leave the photos alone.
 
-**Change slug.** Follow "Как сменить адрес коллекции" in `content/README.md`: rename the photo folder, change `slug`, add the old slug to `redirectFrom`, and keep any slugs already in `redirectFrom`.
+**Change slug.** Follow "Changing a collection's address" in `content/README.md`: rename the photo folder, change `slug`, add the old slug to `redirectFrom`, and keep any slugs already in `redirectFrom`.
 
 **Remove.** Delete `content/collections/<slug>.json` and `public/photos/<slug>/`. Then find references to the slug in code and tests:
 

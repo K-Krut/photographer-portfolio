@@ -1,59 +1,61 @@
-# Онлайн-запись на съёмку
+# Online booking
 
-Страница `/en/booking` и `/pl/booking` показывает посетителю календарь, свободные часы на выбранный день и форму с контактами; выбранное время сразу бронируется и пропадает для остальных. Посетитель получает письмо с подтверждением, фотограф — письмо с контактами, временем и ссылкой на отмену.
+The `/en/booking` and `/pl/booking` pages show the visitor a calendar, the free hours of the chosen day and a contact form. The chosen time is reserved at once and disappears for everyone else. The visitor gets a confirmation e-mail; the photographer gets an e-mail with the contacts, the time and a cancellation link.
 
-Ниже — полная настройка с нуля: Google Cloud, Google Календарь, Gmail, Vercel, проверка и что делать, если что-то не работает. Платить нигде ничего не нужно, Google Workspace не нужен — хватает обычного аккаунта Gmail.
+Below is the complete setup from scratch: Google Cloud, Google Calendar, Gmail, Vercel, the checks, and what to do when something does not work. Nothing has to be paid for and Google Workspace is not needed: a regular Gmail account is enough.
 
-## Содержание
+The Google screens are described with their English labels. If your Google account is in another language, the buttons are in the same places.
 
-- [Как это устроено](#как-это-устроено)
-- [Что понадобится](#что-понадобится)
-- [Шаг 1. Google Cloud: проект](#шаг-1-google-cloud-проект)
-- [Шаг 2. Включить Google Calendar API](#шаг-2-включить-google-calendar-api)
-- [Шаг 3. Сервисный аккаунт и ключ](#шаг-3-сервисный-аккаунт-и-ключ)
-- [Шаг 4. Календарь «Bookings»](#шаг-4-календарь-bookings)
-- [Шаг 5. Свои календари](#шаг-5-свои-календари)
-- [Шаг 6. Пароль приложения Gmail](#шаг-6-пароль-приложения-gmail)
-- [Шаг 7. Секрет для ссылок отмены](#шаг-7-секрет-для-ссылок-отмены)
-- [Шаг 8. Telegram](#шаг-8-telegram)
-- [Шаг 9. Вписать переменные в Vercel](#шаг-9-вписать-переменные-в-vercel)
-- [Шаг 10. Проверить](#шаг-10-проверить)
-- [Как закрывать время](#как-закрывать-время)
-- [Как выглядят брони](#как-выглядят-брони)
-- [Как отменить бронь](#как-отменить-бронь)
-- [Если что-то не работает](#если-что-то-не-работает)
-- [Переменные](#переменные)
-- [Безопасность и замена ключей](#безопасность-и-замена-ключей)
+## Contents
 
-## Как это устроено
+- [How it works](#how-it-works)
+- [What you need](#what-you-need)
+- [Step 1. Google Cloud: a project](#step-1-google-cloud-a-project)
+- [Step 2. Enable the Google Calendar API](#step-2-enable-the-google-calendar-api)
+- [Step 3. Service account and key](#step-3-service-account-and-key)
+- [Step 4. The "Bookings" calendar](#step-4-the-bookings-calendar)
+- [Step 5. Your own calendars](#step-5-your-own-calendars)
+- [Step 6. Gmail app password](#step-6-gmail-app-password)
+- [Step 7. Secret for cancellation links](#step-7-secret-for-cancellation-links)
+- [Step 8. Telegram](#step-8-telegram)
+- [Step 9. Add the variables to Vercel](#step-9-add-the-variables-to-vercel)
+- [Step 10. Check](#step-10-check)
+- [Blocking time](#blocking-time)
+- [What reservations look like](#what-reservations-look-like)
+- [Cancelling a reservation](#cancelling-a-reservation)
+- [When something does not work](#when-something-does-not-work)
+- [Variables](#variables)
+- [Security and replacing keys](#security-and-replacing-keys)
 
-Всё живёт в Google Календаре, никакой отдельной админки нет.
+## How it works
 
-- Каждый день открыт для записи целиком внутри дневного окна. Окно одно на все дни и задаётся в настройках сайта (переменная `BOOKING_WINDOW`), по умолчанию 08:00–22:00.
-- Время закрывают события в календарях. Сайт смотрит в два места: в **свои календари фотографа** (работа, личные планы — всё, что уже есть) и в отдельный календарь **Bookings**, куда сайт сам записывает брони. Любое событие в этих календарях делает время занятым, независимо от названия.
-- Сеанс начинается в целый час (18:00, 19:00 — но не 18:30), длится 1, 2 или 3 часа и должен целиком помещаться в окно и не пересекаться ни с одним событием. Буфера между сеансами нет: событие до 18:30 оставляет первый часовой старт в 19:00, бронь до 20:00 позволяет следующей начаться в 20:00.
-- Записаться можно не раньше чем за 24 часа и не дальше чем на год вперёд.
-- Все времена — варшавские (`Europe/Warsaw`), часовой пояс посетителя не учитывается. Календари в Google тоже лучше держать в варшавском поясе.
-- Изменения в календаре попадают на сайт в течение минуты.
+Everything lives in Google Calendar; there is no separate admin panel.
 
-Сайт читает и пишет календари через **сервисный аккаунт** Google — это технический пользователь с собственным e-mail вида `...@...iam.gserviceaccount.com`. Ему дают доступ к календарям так же, как обычному человеку: через «Настройки и общий доступ» календаря. Письма сайт отправляет с Gmail фотографа по паролю приложения.
+- Every day is open for booking within the daily window. The window is the same for all days and is set in the site settings (the `BOOKING_WINDOW` variable), 08:00–22:00 by default.
+- Time is blocked by calendar events. The site looks in two places: the **photographer's own calendars** (work, personal plans, whatever already exists) and a separate **Bookings** calendar, where the site writes reservations itself. Any event in these calendars makes the time busy, whatever its title.
+- A session starts on the hour (18:00, 19:00, but not 18:30), lasts 1, 2 or 3 hours, must fit entirely inside the window and must not overlap any event. There is no buffer between sessions: an event until 18:30 leaves 19:00 as the first start on the hour, and a reservation until 20:00 lets the next one start at 20:00.
+- Bookings can be made no less than 24 hours and no more than a year ahead.
+- All times are Warsaw time (`Europe/Warsaw`); the visitor's time zone is ignored. The Google calendars are best kept in the Warsaw time zone too.
+- Calendar changes reach the site within a minute.
+
+The site reads and writes the calendars through a Google **service account**: a technical user with its own e-mail of the form `...@...iam.gserviceaccount.com`. It gets access to calendars just like a person does, through the calendar's "Settings and sharing". The site sends e-mail from the photographer's Gmail with an app password.
 
 ```
-Посетитель ─► сайт на Vercel ─┬─► Google Calendar API (сервисный аккаунт)
-                              │     ├─ читает занятость своих календарей фотографа
-                              │     └─ читает и пишет календарь Bookings
-                              └─► smtp.gmail.com (пароль приложения)
-                                    └─ письма посетителю и фотографу
+Visitor ─► site on Vercel ─┬─► Google Calendar API (service account)
+                           │     ├─ reads free/busy of the photographer's own calendars
+                           │     └─ reads and writes the Bookings calendar
+                           └─► smtp.gmail.com (app password)
+                                 └─ e-mails to the visitor and the photographer
 ```
 
-## Что понадобится
+## What you need
 
-- Аккаунт Google фотографа — тот, в чьём Календаре ведётся расписание и с чьего Gmail уйдут письма. Всё ниже делается под ним.
-- Телефон для двухэтапной аутентификации Google (шаг 6).
-- Доступ к проекту на https://vercel.com (шаг 9).
-- Около 30–40 минут.
+- The photographer's Google account: the one whose Calendar holds the schedule and whose Gmail will send the e-mails. Everything below is done while signed in to it.
+- A phone for Google 2-Step Verification (step 6).
+- Access to the project on https://vercel.com (step 9).
+- About 30–40 minutes.
 
-По ходу удобно завести заметку и складывать туда значения — в конце их нужно будет вписать в Vercel:
+It helps to keep a note and collect the values in it as you go; at the end they go into Vercel:
 
 ```
 BOOKING_GOOGLE_CLIENT_EMAIL=
@@ -66,250 +68,250 @@ BOOKING_TOKEN_SECRET=
 NEXT_PUBLIC_SITE_URL=
 ```
 
-Заметку с этими значениями нельзя хранить в общем доступе и пересылать: в ней пароль от почты и ключ к календарям. После шага 9 её лучше удалить.
+Do not share or forward this note: it contains the mail password and the key to the calendars. Delete it after step 9.
 
-## Шаг 1. Google Cloud: проект
+## Step 1. Google Cloud: a project
 
-Google Cloud — это консоль, где создаются технические доступы к сервисам Google. Проект в ней бесплатный, банковскую карту привязывать не нужно.
+Google Cloud is the console where technical access to Google services is created. A project there is free and needs no bank card.
 
-1. Открыть https://console.cloud.google.com под аккаунтом фотографа. Проверить аккаунт можно по аватарке в правом верхнем углу.
-2. При первом входе Google попросит выбрать страну и принять условия (Terms of Service) — отметить и нажать «Принять и продолжить» / «Agree and continue». Если предложат бесплатный пробный период (Free trial) с вводом карты — закрыть это предложение, он не нужен.
-3. Вверху слева, рядом с логотипом Google Cloud, нажать выбор проекта (там написано «Выберите проект» / «Select a project» или имя текущего проекта) → в открывшемся окне «Создать проект» / «New project».
-4. Название — любое, например `Booking`. Поле «Местоположение» / «Location» оставить как есть («Без организации» / «No organization»). «Создать» / «Create».
-5. Подождать несколько секунд, пока в колокольчике справа вверху не появится «Проект создан», и **выбрать этот проект** в том же выпадающем списке вверху. Дальше всё делается внутри него — имя проекта должно быть видно вверху страницы.
+1. Open https://console.cloud.google.com signed in as the photographer. The account is shown by the avatar in the top right corner.
+2. On the first visit Google asks for a country and to accept the Terms of Service: tick it and press "Agree and continue". If it offers a Free trial that asks for a card, close it; it is not needed.
+3. At the top left, next to the Google Cloud logo, open the project picker (it says "Select a project" or the name of the current project) → "New project" in the window that opens.
+4. Any name, for example `Booking`. Leave "Location" as it is ("No organization"). Press "Create".
+5. Wait a few seconds until the bell at the top right says the project is created, and **select this project** in the same picker at the top. Everything else is done inside it: its name must be visible at the top of the page.
 
-## Шаг 2. Включить Google Calendar API
+## Step 2. Enable the Google Calendar API
 
-Без этого сайт получит ошибку «Google Calendar API has not been used in project … or it is disabled».
+Without this the site gets the error "Google Calendar API has not been used in project … or it is disabled".
 
-1. Меню слева (☰) → «API и сервисы» / «APIs & Services» → «Библиотека» / «Library». Или сразу https://console.cloud.google.com/apis/library/calendar-json.googleapis.com.
-2. В поиске набрать `Google Calendar API` и открыть карточку с таким названием (не «CalDAV API»).
-3. Нажать «Включить» / «Enable». Если кнопка называется «Управление» / «Manage» — API уже включён.
+1. Left menu (☰) → "APIs & Services" → "Library". Or go straight to https://console.cloud.google.com/apis/library/calendar-json.googleapis.com.
+2. Search for `Google Calendar API` and open the card with exactly that name (not "CalDAV API").
+3. Press "Enable". If the button says "Manage", the API is already enabled.
 
-Экран согласия OAuth (OAuth consent screen), который консоль может предлагать настроить, **не нужен**: сервисный аккаунт работает без него. Баннер «Create credentials to use this API» тоже можно игнорировать — учётные данные создаются в следующем шаге.
+The OAuth consent screen that the console may suggest setting up is **not needed**: the service account works without it. The "Create credentials to use this API" banner can be ignored too; the credentials are created in the next step.
 
-## Шаг 3. Сервисный аккаунт и ключ
+## Step 3. Service account and key
 
-1. Меню слева → «IAM и администрирование» / «IAM & Admin» → «Сервисные аккаунты» / «Service Accounts». Или https://console.cloud.google.com/iam-admin/serviceaccounts. Проверить, что вверху выбран проект из шага 1.
-2. «Создать сервисный аккаунт» / «Create service account».
-3. Первый экран: название — например `booking-site`. Идентификатор подставится сам. Описание — по желанию. «Создать и продолжить» / «Create and continue».
-4. Второй экран «Права доступа» / «Permissions» — **ничего не выбирать**, роль не нужна: доступ к календарям даётся не здесь, а в самом Календаре. «Продолжить» / «Continue».
-5. Третий экран — тоже пропустить. «Готово» / «Done».
-6. В списке появится аккаунт с e-mail вида `booking-site@booking-123456.iam.gserviceaccount.com`. Нажать на этот e-mail.
-7. Вкладка «Ключи» / «Keys» → «Добавить ключ» / «Add key» → «Создать новый ключ» / «Create new key» → тип **JSON** → «Создать» / «Create». На компьютер скачается файл вроде `booking-123456-1a2b3c4d5e6f.json`.
-8. Открыть этот файл любым текстовым редактором (TextEdit, Блокнот, VS Code). Внутри — JSON. Нужны два поля:
+1. Left menu → "IAM & Admin" → "Service Accounts". Or https://console.cloud.google.com/iam-admin/serviceaccounts. Check that the project from step 1 is selected at the top.
+2. "Create service account".
+3. First screen: a name, for example `booking-site`. The ID is filled in automatically. The description is optional. "Create and continue".
+4. Second screen, "Permissions": **select nothing**, no role is needed. Calendar access is not granted here but in Calendar itself. "Continue".
+5. Skip the third screen as well. "Done".
+6. The list now shows an account with an e-mail like `booking-site@booking-123456.iam.gserviceaccount.com`. Click that e-mail.
+7. "Keys" tab → "Add key" → "Create new key" → type **JSON** → "Create". A file like `booking-123456-1a2b3c4d5e6f.json` is downloaded.
+8. Open the file in any text editor (TextEdit, Notepad, VS Code). It contains JSON. Two fields are needed:
 
-   | Поле в файле | Куда идёт |
+   | Field in the file | Where it goes |
    | --- | --- |
-   | `client_email` | `BOOKING_GOOGLE_CLIENT_EMAIL`. Это e-mail сервисного аккаунта, тот же, что в списке из п. 6. Он понадобится ещё в шагах 4 и 5. |
-   | `private_key` | `BOOKING_GOOGLE_PRIVATE_KEY`. Длинная строка в кавычках, от `-----BEGIN PRIVATE KEY-----` до `-----END PRIVATE KEY-----\n`. Копировать **то, что между кавычками**, целиком, вместе со всеми `\n` внутри — сайт сам превратит их в переносы строк. Сами кавычки не копировать. |
+   | `client_email` | `BOOKING_GOOGLE_CLIENT_EMAIL`. The service account's e-mail, the same as in the list from item 6. You will need it again in steps 4 and 5. |
+   | `private_key` | `BOOKING_GOOGLE_PRIVATE_KEY`. A long quoted string from `-----BEGIN PRIVATE KEY-----` to `-----END PRIVATE KEY-----\n`. Copy **what is between the quotes**, in full, with every `\n` inside; the site turns them into line breaks. Do not copy the quotes themselves. |
 
-Файл с ключом — это пароль к календарям. Не пересылать, не класть в проект и в облако. После того как значения вписаны в Vercel и всё проверено, файл лучше удалить: если ключ понадобится снова, проще создать новый (см. [Безопасность и замена ключей](#безопасность-и-замена-ключей)).
+The key file is a password to the calendars. Do not forward it, put it in the project or upload it to a cloud drive. Once the values are in Vercel and everything works, delete the file: if the key is needed again, it is simpler to create a new one (see [Security and replacing keys](#security-and-replacing-keys)).
 
-Если на п. 7 появляется ошибка «Service account key creation is disabled» — аккаунт Google принадлежит организации (рабочий или учебный Google Workspace), и администратор запретил ключи. Проще всего начать заново с личным аккаунтом Gmail; иначе администратор должен снять политику `iam.disableServiceAccountKeyCreation` для этого проекта.
+If item 7 shows "Service account key creation is disabled", the Google account belongs to an organization (a work or school Google Workspace) whose administrator has forbidden keys. The simplest way out is to start again with a personal Gmail account; otherwise the administrator has to lift the `iam.disableServiceAccountKeyCreation` policy for this project.
 
-## Шаг 4. Календарь «Bookings»
+## Step 4. The "Bookings" calendar
 
-Отдельный календарь нужен, чтобы брони с сайта не смешивались с остальным и чтобы сайт мог писать только в него. Делается в Google Календаре в браузере на компьютере — в мобильном приложении этих настроек нет.
+A separate calendar keeps the site's reservations apart from everything else and lets the site write only there. This is done in Google Calendar in a desktop browser; the mobile app does not have these settings.
 
-1. Открыть https://calendar.google.com под тем же аккаунтом.
-2. Слева, напротив «Другие календари» / «Other calendars», нажать «+» → «Создать календарь» / «Create new calendar».
-3. Название — `Bookings`. Часовой пояс — Варшава («Central European Time — Warsaw»). «Создать календарь» / «Create calendar».
-4. Слева в списке «Мои календари» / «My calendars» навести на `Bookings` → три точки → «Настройки и общий доступ» / «Settings and sharing».
-5. Раздел «Доступ для отдельных пользователей и групп» / «Share with specific people or groups» → «Добавить пользователей и группы» / «Add people and groups».
-6. Вставить e-mail сервисного аккаунта (`client_email` из шага 3). Google может предупредить, что адрес не из вашей организации или контактов, — это нормально.
-7. В списке прав выбрать **«Внесение изменений в мероприятия» / «Make changes to events»**. Не «Просмотр…» — с правом только на чтение сайт не сможет создавать брони. «Отправить» / «Send».
-8. Прокрутить ниже до раздела «Интеграция календаря» / «Integrate calendar» и скопировать **«Идентификатор календаря» / «Calendar ID»** — строка вида `c_1a2b3c...@group.calendar.google.com`. Это `BOOKING_CALENDAR_ID`.
+1. Open https://calendar.google.com with the same account.
+2. On the left, next to "Other calendars", press "+" → "Create new calendar".
+3. Name: `Bookings`. Time zone: Warsaw ("Central European Time — Warsaw"). "Create calendar".
+4. In the "My calendars" list on the left, hover over `Bookings` → three dots → "Settings and sharing".
+5. Section "Share with specific people or groups" → "Add people and groups".
+6. Paste the service account's e-mail (`client_email` from step 3). Google may warn that the address is outside your organization or contacts; that is fine.
+7. In the permissions list choose **"Make changes to events"**. Not "See all event details": with read-only access the site cannot create reservations. "Send".
+8. Scroll down to "Integrate calendar" and copy the **"Calendar ID"**, a string like `c_1a2b3c...@group.calendar.google.com`. This is `BOOKING_CALENDAR_ID`.
 
-Сервисному аккаунту не нужно ничего «принимать»: доступ работает сразу после «Отправить».
+The service account does not need to "accept" anything: access works right after "Send".
 
-Сайт создаёт события только в этом календаре, но занятым считает и его тоже: событие, добавленное в Bookings руками, закроет время точно так же, как бронь.
+The site creates events only in this calendar, but it also counts this calendar as busy: an event added to Bookings by hand blocks the time just like a reservation.
 
-## Шаг 5. Свои календари
+## Step 5. Your own calendars
 
-Сайту нужно знать, когда фотограф занят, — но не чем. Поэтому своим календарям даётся доступ только к занятости.
+The site needs to know when the photographer is busy, but not with what. So the photographer's own calendars only share free/busy.
 
-1. Решить, какие календари должны закрывать время. Обычно это основной календарь (называется именем владельца) и, если есть, отдельные «Работа», «Семья» и т. п. Праздники, дни рождения и чужие подписанные календари обычно не нужны.
-2. Для каждого такого календаря: слева навести → три точки → «Настройки и общий доступ» / «Settings and sharing».
-3. «Доступ для отдельных пользователей и групп» → «Добавить пользователей и группы» → e-mail сервисного аккаунта → право **«Только информация о том, свободен ли пользователь (скрыть подробности)» / «See only free/busy (hide details)»**. «Отправить».
-4. В «Интеграция календаря» скопировать «Идентификатор календаря». У основного календаря это просто адрес Gmail (`name@gmail.com`), у остальных — `...@group.calendar.google.com`.
-5. Все эти идентификаторы через запятую, без пробелов, — `BOOKING_BLOCKING_CALENDAR_IDS`. Например: `name@gmail.com,c_9f8e7d...@group.calendar.google.com`. Календарь Bookings сюда писать не нужно, он учитывается сам. Хотя бы один календарь в списке обязателен.
+1. Decide which calendars should block time. Usually that is the main calendar (named after the owner) and, if there are any, separate ones like "Work" or "Family". Holidays, birthdays and calendars subscribed from others are usually not needed.
+2. For each such calendar: hover over it on the left → three dots → "Settings and sharing".
+3. "Share with specific people or groups" → "Add people and groups" → the service account's e-mail → permission **"See only free/busy (hide details)"**. "Send".
+4. Under "Integrate calendar", copy the "Calendar ID". For the main calendar it is simply the Gmail address (`name@gmail.com`); for the others it is `...@group.calendar.google.com`.
+5. All these IDs, comma-separated without spaces, are `BOOKING_BLOCKING_CALENDAR_IDS`. For example: `name@gmail.com,c_9f8e7d...@group.calendar.google.com`. Do not add the Bookings calendar here; it is counted automatically. At least one calendar is required.
 
-Если в список не попал какой-то календарь, его события сайт не увидит и будет предлагать это время. Календарь, на который нет доступа, наоборот, ломает запись целиком — страница покажет ошибку, пока доступ не дадут или идентификатор не уберут из списка.
+If a calendar is missing from the list, the site does not see its events and keeps offering that time. A calendar the site has no access to, on the other hand, breaks booking entirely: the page shows an error until access is granted or the ID is removed from the list.
 
-Календарь, который принадлежит другому аккаунту (например, рабочий календарь, которым поделились с фотографом), подключить можно, только если его владелец сам выдаст сервисному аккаунту доступ «только свободен/занят» по пп. 2–3.
+A calendar owned by another account (for example a work calendar shared with the photographer) can be connected only if its owner gives the service account free/busy access as in items 2–3.
 
-## Шаг 6. Пароль приложения Gmail
+## Step 6. Gmail app password
 
-Письма уходят с Gmail-адреса фотографа через SMTP. Для этого сайту нужен не обычный пароль, а отдельный «пароль приложения» — 16 букв, которые подходят только для почты и которые можно отозвать, не меняя основной пароль.
+E-mails are sent from the photographer's Gmail address over SMTP. For that the site needs not the regular password but a separate "app password": 16 letters that work only for mail and can be revoked without changing the main password.
 
-1. Открыть https://myaccount.google.com/security под тем же аккаунтом.
-2. В разделе «Вход в аккаунт Google» / «How you sign in to Google» открыть **«Двухэтапная аутентификация» / «2-Step Verification»** и включить, если она выключена: Google попросит подтвердить номер телефона кодом из SMS. Без двухэтапной аутентификации пароли приложений недоступны.
-3. Открыть https://myaccount.google.com/apppasswords (пункт «Пароли приложений» / «App passwords» также находится поиском по аккаунту вверху страницы).
-4. Ввести название, например `Booking site` → «Создать» / «Create».
-5. Google один раз покажет пароль вида `abcd efgh ijkl mnop`. Скопировать его **без пробелов** (`abcdefghijklmnop`) — это `BOOKING_GMAIL_APP_PASSWORD`. Повторно этот пароль уже не показать, только создать новый.
-6. Адрес этой почты целиком (`name@gmail.com`) — `BOOKING_GMAIL_ADDRESS`. Это должен быть именно тот аккаунт, для которого создан пароль.
+1. Open https://myaccount.google.com/security with the same account.
+2. Under "How you sign in to Google", open **"2-Step Verification"** and turn it on if it is off: Google asks to confirm a phone number with an SMS code. App passwords are not available without 2-Step Verification.
+3. Open https://myaccount.google.com/apppasswords (the "App passwords" page can also be found with the search box at the top of the account page).
+4. Enter a name, for example `Booking site` → "Create".
+5. Google shows a password like `abcd efgh ijkl mnop` once. Copy it **without spaces** (`abcdefghijklmnop`); this is `BOOKING_GMAIL_APP_PASSWORD`. It cannot be shown again, only replaced with a new one.
+6. The full address of this mailbox (`name@gmail.com`) is `BOOKING_GMAIL_ADDRESS`. It must be the same account the app password was created for.
 
-Уведомления фотографу приходят на `BOOKING_GMAIL_ADDRESS`; если удобнее другой адрес, указать его в `BOOKING_NOTIFY_EMAIL`. Письма, отправленные сайтом, видны в Gmail в папке «Отправленные».
+Notifications for the photographer go to `BOOKING_GMAIL_ADDRESS`; to use another address, set it in `BOOKING_NOTIFY_EMAIL`. E-mails sent by the site are visible in Gmail under "Sent".
 
-Если страницы «Пароли приложений» нет или там написано «The setting you are looking for is not available for your account»:
+If the "App passwords" page is missing or says "The setting you are looking for is not available for your account":
 
-- двухэтапная аутентификация ещё не включена (п. 2);
-- во входе настроены **только** ключи доступа или электронные ключи (passkeys, security keys) — нужно добавить второй способ, например SMS или Google Authenticator;
-- включена «Расширенная защита» (Advanced Protection) — с ней пароли приложений не работают;
-- это рабочий аккаунт Google Workspace, и администратор запретил пароли приложений.
+- 2-Step Verification is not on yet (item 2);
+- sign-in uses **only** passkeys or security keys: add a second method, such as SMS or Google Authenticator;
+- Advanced Protection is on: app passwords do not work with it;
+- it is a Google Workspace work account and the administrator has disabled app passwords.
 
-Gmail отправляет не больше примерно 500 писем в сутки с обычного аккаунта. На одну бронь уходит 2 письма, так что запаса хватает с избытком.
+A regular Gmail account sends at most about 500 e-mails a day. Each reservation sends 2, so there is plenty of headroom.
 
-## Шаг 7. Секрет для ссылок отмены
+## Step 7. Secret for cancellation links
 
-Ссылки отмены в письмах подписываются секретом, чтобы их нельзя было подделать. Это просто длинная случайная строка.
+Cancellation links in the e-mails are signed with a secret so they cannot be forged. It is just a long random string.
 
-- На Mac или Linux: открыть «Терминал» и выполнить `openssl rand -hex 32`. Получится 64 символа из цифр и букв a–f.
-- Без терминала: любой генератор паролей (например, в менеджере паролей) на 40+ символов из букв и цифр.
+- On a Mac or Linux: open Terminal and run `openssl rand -hex 32`. You get 64 characters of digits and letters a–f.
+- Without a terminal: any password generator (for example in a password manager) set to 40+ letters and digits.
 
-Это `BOOKING_TOKEN_SECRET`. Его **нельзя менять**, пока есть будущие брони: после замены все уже разосланные ссылки отмены перестанут работать.
+This is `BOOKING_TOKEN_SECRET`. **Do not change it** while there are future reservations: after a change, every cancellation link already sent stops working.
 
-## Шаг 8. Telegram
+## Step 8. Telegram
 
-Пока **не работает**: переменные для Telegram сайт уже понимает, но отправку сообщений ещё не сделали (см. `SPEC-telegram.md`). Сейчас все уведомления приходят только письмами. Бота можно завести заранее — когда отправку добавят, достаточно будет вписать две переменные.
+**Not working yet**: the site already understands the Telegram variables, but sending messages is not implemented (see `SPEC-telegram.md`). For now all notifications arrive by e-mail only. The bot can be created in advance; once sending is added, it will be enough to set two variables.
 
-1. В Telegram открыть @BotFather → `/newbot`. Придумать имя (любое) и username (латиницей, кончается на `bot`, например `photo_booking_bot`). BotFather пришлёт **токен** вида `123456789:AAF...` — это `BOOKING_TELEGRAM_BOT_TOKEN`. Токен — тоже пароль, его никому не пересылать.
-2. Открыть своего нового бота и нажать «Start» (или написать ему что угодно) — иначе бот не сможет писать первым.
-3. Узнать свой **chat id** — число, одним из способов:
-   - открыть в браузере `https://api.telegram.org/bot<ТОКЕН>/getUpdates` (вместо `<ТОКЕН>` — токен из п. 1, без скобок) и найти в ответе `"chat":{"id":123456789` — это число; если ответ `{"ok":true,"result":[]}`, написать боту ещё одно сообщение и обновить страницу;
-   - или написать боту @userinfobot — он ответит вашим `Id`.
+1. In Telegram open @BotFather → `/newbot`. Choose any name and a username (Latin letters, ending in `bot`, for example `photo_booking_bot`). BotFather sends a **token** like `123456789:AAF...`; this is `BOOKING_TELEGRAM_BOT_TOKEN`. The token is a password too; do not share it.
+2. Open your new bot and press "Start" (or send it anything); otherwise the bot cannot write first.
+3. Find your **chat id**, a number, in one of these ways:
+   - open `https://api.telegram.org/bot<TOKEN>/getUpdates` in a browser (with the token from item 1 in place of `<TOKEN>`, without the brackets) and find `"chat":{"id":123456789` in the response; that number is it. If the response is `{"ok":true,"result":[]}`, send the bot another message and reload the page;
+   - or message @userinfobot, which replies with your `Id`.
 
-   Это `BOOKING_TELEGRAM_CHAT_ID`.
+   This is `BOOKING_TELEGRAM_CHAT_ID`.
 
-Нужны обе переменные сразу: если указана только одна, Telegram считается не настроенным. На работу записи Telegram не влияет ни сейчас, ни потом.
+Both variables are needed together: with only one of them, Telegram counts as not configured. Telegram does not affect booking, now or later.
 
-## Шаг 9. Вписать переменные в Vercel
+## Step 9. Add the variables to Vercel
 
-1. Открыть https://vercel.com → проект сайта → вкладка «Settings» → слева «Environment Variables».
-2. Для каждой переменной из заметки: имя — в поле «Key», значение — в «Value». В «Environments» отметить **Production** (и **Preview**, если запись нужно проверять на превью-ссылках веток). «Save».
+1. Open https://vercel.com → the site's project → "Settings" tab → "Environment Variables" on the left.
+2. For each variable from the note: the name goes into "Key", the value into "Value". Under "Environments" tick **Production** (and **Preview** if booking should also work on branch preview links). "Save".
 
-   Vercel позволяет вставить в поле «Key» сразу весь блок строк `ИМЯ=значение` — он сам разложит его на переменные. После этого проверить, что ни одно значение не обрезалось.
-3. Особенности значений:
-   - `BOOKING_GOOGLE_PRIVATE_KEY` — вставить одной строкой ровно так, как в JSON между кавычками, с `\n`. **Без** кавычек по краям: в Vercel кавычки становятся частью значения, и ключ перестаёт читаться.
-   - `BOOKING_GMAIL_APP_PASSWORD` — 16 букв без пробелов.
-   - `BOOKING_BLOCKING_CALENDAR_IDS` — через запятую, без пробелов и без запятой в конце.
-   - `NEXT_PUBLIC_SITE_URL` — адрес сайта без `/` в конце, например `https://example.pl`. Его видно в «Settings» → «Domains».
-   - `BOOKING_FAKE` в Vercel **не добавлять** — это режим для автотестов, он подменяет календарь и почту ненастоящими.
-4. **Передеплоить** сайт: вкладка «Deployments» → три точки у самого верхнего деплоя с пометкой «Production» → «Redeploy» → «Redeploy». Переменные подхватываются только новой сборкой; без этого шага сайт продолжит показывать «напишите нам» вместо календаря.
+   Vercel lets you paste a whole block of `NAME=value` lines into the "Key" field and splits it into variables itself. Afterwards check that no value got cut off.
+3. Things to watch in the values:
+   - `BOOKING_GOOGLE_PRIVATE_KEY`: paste it as one line exactly as it is between the quotes in the JSON, with `\n`. **No** quotes around it: in Vercel the quotes become part of the value and the key can no longer be read.
+   - `BOOKING_GMAIL_APP_PASSWORD`: 16 letters without spaces.
+   - `BOOKING_BLOCKING_CALENDAR_IDS`: comma-separated, without spaces and without a trailing comma.
+   - `NEXT_PUBLIC_SITE_URL`: the site address without a trailing `/`, for example `https://example.pl`. It is shown under "Settings" → "Domains".
+   - Do **not** add `BOOKING_FAKE` to Vercel: it is a mode for automated tests that replaces the calendar and mail with fakes.
+4. **Redeploy** the site: "Deployments" tab → three dots on the topmost deployment marked "Production" → "Redeploy" → "Redeploy". Variables are picked up only by a new build; without this step the site keeps showing "write to us" instead of the calendar.
 
-**На компьютере** (для разработки и для проверки из шага 10): в корне проекта создать файл `.env.local` и написать в него те же переменные по одной на строку: `BOOKING_CALENDAR_ID=c_abc123@group.calendar.google.com`. Здесь, в отличие от Vercel, приватный ключ — **в двойных кавычках**: `BOOKING_GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----\n"`. `NEXT_PUBLIC_SITE_URL` на компьютере можно не задавать. Шаблон со всеми именами — в `.env.example`. Файл `.env.local` не попадает в git и никуда не отправляется. `npm run dev` его подхватит; после правок в нём сервер нужно перезапустить.
+**On a computer** (for development and for the check in step 10): create a `.env.local` file in the project root with the same variables, one per line: `BOOKING_CALENDAR_ID=c_abc123@group.calendar.google.com`. Here, unlike Vercel, the private key goes **in double quotes**: `BOOKING_GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIE...\n-----END PRIVATE KEY-----\n"`. `NEXT_PUBLIC_SITE_URL` can be left out on a computer. `.env.example` is a template with every name. `.env.local` is not committed and is never sent anywhere. `npm run dev` picks it up; restart the server after editing it.
 
-## Шаг 10. Проверить
+## Step 10. Check
 
-### Проверка календарей с компьютера
+### Checking the calendars from a computer
 
-Если на компьютере есть проект и заполнен `.env.local`, доступ к календарям проверяется одной командой из корня проекта:
+If the project is on your computer and `.env.local` is filled in, calendar access is checked with one command from the project root:
 
 ```
 node --env-file=.env.local scripts/check-booking-calendar.ts
 ```
 
-Скрипт печатает, какие календари он видит, и список занятых интервалов на неделю вперёд, затем создаёт в Bookings тестовую бронь `Test Visitor (delete me)` через 7 дней в 12:00, находит её и сразу удаляет. Писем он не отправляет. Удачная проверка заканчивается строкой вида:
+The script prints which calendars it sees and the busy intervals for the coming week, then creates a test reservation `Test Visitor (delete me)` in Bookings 7 days ahead at 12:00, finds it and deletes it right away. It sends no e-mail. A successful check ends with a line like:
 
 ```
 3 busy interval(s) read, create/read/delete OK.
 ```
 
-Стоит сверить список занятых интервалов с календарём: если на неделе есть события, а скрипт пишет `0 interval(s)`, какой-то календарь не попал в `BOOKING_BLOCKING_CALENDAR_IDS` или события в нём стоят как «Свободен» (см. [Как закрывать время](#как-закрывать-время)). Если скрипт упал с ошибкой — найти её текст в [таблице ниже](#если-что-то-не-работает).
+Compare the busy intervals with the calendar: if there are events this week but the script says `0 interval(s)`, some calendar is missing from `BOOKING_BLOCKING_CALENDAR_IDS` or its events are marked "Free" (see [Blocking time](#blocking-time)). If the script fails with an error, look up its text in the [table below](#when-something-does-not-work).
 
-### Проверка на сайте
+### Checking on the site
 
-1. Открыть `https://<сайт>/en/booking`. Вместо календаря не должно быть текста «write to …» — если он есть, Vercel не видит какую-то обязательную переменную или сайт не передеплоен.
-2. Выбрать день, где в своём календаре есть событие, и убедиться, что это время недоступно.
-3. Записаться на свободное время со своего второго e-mail (или с того же — неважно).
-4. Проверить:
-   - в календаре Bookings появилось событие с именем и типом съёмки;
-   - на e-mail посетителя пришло письмо с подтверждением;
-   - на `BOOKING_NOTIFY_EMAIL` (или `BOOKING_GMAIL_ADDRESS`) пришло письмо фотографу; если нет — посмотреть в «Спаме»;
-   - кнопки в письмах ведут на настоящий адрес сайта, а не на `localhost`.
-5. Отменить тестовую бронь кнопкой из письма фотографу и подтвердить. Событие должно исчезнуть из Bookings, а посетителю — прийти письмо об отмене.
+1. Open `https://<site>/en/booking`. There must be no "write to …" text instead of the calendar; if there is, Vercel does not see some required variable or the site has not been redeployed.
+2. Pick a day with an event in your own calendar and make sure that time is unavailable.
+3. Book a free time from a second e-mail address of yours (or the same one, it does not matter).
+4. Check that:
+   - an event with the name and the session type appeared in the Bookings calendar;
+   - the visitor's address received a confirmation e-mail;
+   - `BOOKING_NOTIFY_EMAIL` (or `BOOKING_GMAIL_ADDRESS`) received the photographer's e-mail; if not, look in Spam;
+   - the buttons in the e-mails lead to the real site address, not `localhost`.
+5. Cancel the test reservation with the button in the photographer's e-mail and confirm. The event must disappear from Bookings and the visitor must get a cancellation e-mail.
 
-## Как закрывать время
+## Blocking time
 
-Никаких настроек на сайте: занятость — это обычные события в своих календарях.
+There are no settings on the site: busy time is just ordinary events in your own calendars.
 
-- **Повторяющийся график.** Событие «Работа» в понедельник 08:00–17:00 с повтором «Еженедельно» → по понедельникам сайт предлагает только с 17:00. Для «занят пн и ср 08:00–17:00» — одно событие с повтором по понедельникам и средам (в настройках повтора можно отметить несколько дней). Удалить одно вхождение — откроется один день; удалить всю серию — откроются все.
-- **Целый день.** Событие «Весь день» закрывает день полностью, но только если в нём «Показывать как» стоит **«Занят»**: события на весь день Google по умолчанию создаёт как «Свободен», и такое событие сайт в своих календарях фотографа не видит. Поэтому при создании события «Весь день» открыть «Другие параметры» и в поле «Показывать как» выбрать «Занят» (в настройках календаря можно и вовсе задать это по умолчанию). Повторяющееся событие «Весь день» по воскресеньям с «Занят» — выходной каждое воскресенье. Отпуск — одно событие «Весь день» с «Занят» на нужные даты. В календаре Bookings эта настройка не важна: его сайт читает целиком, и там любое событие на весь день закрывает день.
-- **Часть дня.** Любое событие с временем — врач в 12:00–13:30, встреча в 19:00. Названия и подробностей сайт не видит. Если у такого события в своём календаре вручную выставлено «Показывать как: Свободен», время оно не закрывает.
-- **Окно дня.** `BOOKING_WINDOW` — границы, за которые запись не выходит ни в один день: `08:00-22:00` значит, что последний часовой сеанс начнётся в 21:00, двухчасовой — в 20:00. Если стандартного рабочего времени нет, окно менять не нужно — достаточно закрыть лишнее событиями. Если же съёмки никогда не раньше 10:00 и не позже 20:00, проще поставить `10:00-20:00`, чем добавлять утренние и вечерние события на каждый день. Окно меняется в Vercel и вступает в силу после передеплоя; значение в неправильном формате выключает запись целиком.
+- **A recurring schedule.** A "Work" event on Monday 08:00–17:00 repeating "Weekly" → on Mondays the site offers only times from 17:00. For "busy Mon and Wed 08:00–17:00", use one event repeating on Mondays and Wednesdays (the repeat settings let you tick several days). Delete one occurrence to open one day; delete the whole series to open them all.
+- **A whole day.** An "All day" event blocks the day completely, but only if its "Show as" is set to **"Busy"**: Google creates all-day events as "Free" by default, and the site does not see such an event in the photographer's own calendars. So when creating an all-day event, open "More options" and set "Show as" to "Busy" (the calendar settings can also make this the default). A recurring all-day "Busy" event on Sundays makes every Sunday a day off. A holiday is one all-day "Busy" event over the dates. In the Bookings calendar this setting does not matter: the site reads it in full, and any all-day event there blocks the day.
+- **Part of a day.** Any timed event: a doctor at 12:00–13:30, a meeting at 19:00. The site does not see titles or details. If such an event in your own calendar is manually set to "Show as: Free", it does not block time.
+- **The daily window.** `BOOKING_WINDOW` sets the limits that booking never goes beyond on any day: `08:00-22:00` means the last one-hour session starts at 21:00 and the last two-hour one at 20:00. Without standard working hours there is no need to change the window; just block the extra time with events. But if shoots are never before 10:00 or after 20:00, it is simpler to set `10:00-20:00` than to add morning and evening events every day. The window is changed in Vercel and takes effect after a redeploy; a value in the wrong format turns booking off completely.
 
-Открыть время = удалить событие. На сайте это отразится в течение минуты.
+Opening time = deleting the event. The site reflects it within a minute.
 
-## Как выглядят брони
+## What reservations look like
 
-Каждая бронь — событие в календаре Bookings на забронированное время:
+Every reservation is an event in the Bookings calendar at the booked time:
 
-- **Название** — имя посетителя и тип съёмки, например `Anna Kowalska — Personal Photosessions`.
-- **Описание** — e-mail, телефон, Telegram, комментарий посетителя, язык страницы (en/pl) и цена.
+- **Title**: the visitor's name and the session type, for example `Anna Kowalska — Personal Photosessions`.
+- **Description**: e-mail, phone, Telegram, the visitor's comment, the page language (en/pl) and the price.
 
-Всё читается прямо в приложении Календаря, ничего больше открывать не нужно. Эти же данные приходят в письме вместе со ссылкой на отмену.
+Everything is readable right in the Calendar app; nothing else needs to be opened. The same details arrive in the e-mail together with the cancellation link.
 
-Сайт меняет и удаляет только события, которые создал сам. Свои события фотографа — в любом календаре, включая Bookings, — он никогда не трогает.
+The site changes and deletes only events it created itself. It never touches the photographer's own events, in any calendar including Bookings.
 
-Если на день с бронью добавить своё событие на то же время, бронь останется и её ссылки отмены продолжат работать — закроются только новые записи на это время. Если съёмка не состоится, бронь нужно отменить отдельно (см. ниже).
+If you add your own event at the same time as an existing reservation, the reservation stays and its cancellation links keep working; only new bookings for that time are blocked. If the session will not happen, the reservation has to be cancelled separately (see below).
 
-## Как отменить бронь
+## Cancelling a reservation
 
-Два способа — отличаются тем, узнает ли посетитель.
+There are two ways, and they differ in whether the visitor is told.
 
-1. **По ссылке из письма-уведомления.** Открывается страница с деталями брони и кнопкой подтверждения; после подтверждения событие удаляется, посетителю уходит письмо с извинением и контактами сайта. Ссылка работает до самого начала сеанса. Просто открыть ссылку, не нажав кнопку, — ничего не отменяет.
-2. **Удалить событие в календаре руками.** Время освободится на сайте в течение минуты, но посетитель **ничего не получит** — написать ему нужно самому, контакты в описании события.
+1. **With the link from the notification e-mail.** It opens a page with the reservation details and a confirmation button; after confirming, the event is deleted and the visitor gets an apology e-mail with the site's contacts. The link works until the session starts. Just opening the link without pressing the button cancels nothing.
+2. **Delete the event in the calendar by hand.** The time frees up on the site within a minute, but the visitor **gets nothing**: write to them yourself; the contacts are in the event description.
 
-Посетитель тоже может отменить бронь по ссылке из своего письма, но только не позже чем за 24 часа до начала. Ближе к сеансу отменить может только фотограф, так что поздняя отмена всегда проходит через разговор. Об отмене посетителем фотографу приходит письмо.
+The visitor can also cancel with the link from their own e-mail, but no later than 24 hours before the start. Closer to the session only the photographer can cancel, so a late cancellation always goes through a conversation. The photographer gets an e-mail when a visitor cancels.
 
-## Если что-то не работает
+## When something does not work
 
-Текст ошибки виден в выводе скрипта проверки (шаг 10) или в Vercel: проект → вкладка «Logs», строки `Booking provider failed` или `Booking … e-mail failed`.
+The error text is in the output of the check script (step 10) or in Vercel: project → "Logs" tab, lines `Booking provider failed` or `Booking … e-mail failed`.
 
-| Что видно | Причина | Что сделать |
+| What you see | Cause | What to do |
 | --- | --- | --- |
-| На странице записи текст «write to …» вместо календаря | Не задана какая-то обязательная переменная, `BOOKING_WINDOW` в неправильном формате или сайт не передеплоен | Сверить переменные с [таблицей](#переменные), включая окружение Production, и передеплоить (шаг 9, п. 4). Скрипт проверки в этом случае пишет `Booking is not configured for Google Calendar`. |
-| Календарь на странице есть, но свободные часы не загружаются | Сайт не может прочитать календари | Найти текст ошибки в Vercel → «Logs» и искать его ниже. |
-| `Google Calendar API has not been used in project … or it is disabled` | API не включён или включён в другом проекте | Шаг 2 — в том же проекте, где создан сервисный аккаунт. После включения подождать пару минут. |
-| `Google token request failed: … invalid_grant` и `Invalid JWT Signature` | Ключ удалён в Google Cloud или скопирован не тот | Создать новый ключ (шаг 3, п. 7) и заменить `BOOKING_GOOGLE_PRIVATE_KEY`. |
-| `Google token request failed: … invalid_grant` и `Token must be a short-lived token` | На компьютере сбиты часы | Включить автоматическое время в настройках системы. |
-| `DECODER routines::unsupported`, `PEM`, `bad base64` и т. п. | Приватный ключ скопирован не целиком или с лишними кавычками | Скопировать `private_key` заново: от `-----BEGIN` до `-----END PRIVATE KEY-----\n`. В Vercel — без кавычек, в `.env.local` — в двойных кавычках. |
-| `Google token request failed: … invalid_client` / `account not found` | `BOOKING_GOOGLE_CLIENT_EMAIL` с опечаткой или сервисный аккаунт удалён | Скопировать `client_email` из JSON-файла заново. |
-| `Not Found` при чтении или создании брони | Календарь Bookings не расшарен на сервисный аккаунт или `BOOKING_CALENDAR_ID` с ошибкой | Шаг 4: проверить e-mail в «Доступ для отдельных пользователей и групп» и скопировать идентификатор заново. |
-| `You need to have writer access to this calendar` / `Forbidden` | Bookings расшарен только на просмотр | Шаг 4, п. 7: поменять право на «Внесение изменений в мероприятия». |
-| `Free/busy query failed for calendar …: notFound` | Этот свой календарь не расшарен на сервисный аккаунт или идентификатор с ошибкой | Шаг 5 для этого календаря, или убрать его из `BOOKING_BLOCKING_CALENDAR_IDS`. |
-| Время свободно, хотя в календаре есть событие | Календарь не в `BOOKING_BLOCKING_CALENDAR_IDS`, или у события «Показывать как: Свободен» | Добавить идентификатор (шаг 5) или поменять у события «Показывать как» на «Занят». |
-| `Invalid login: 535-5.7.8 Username and Password not accepted` | Пароль приложения неверный, с пробелами, отозван, или `BOOKING_GMAIL_ADDRESS` — не тот аккаунт | Шаг 6: создать новый пароль приложения и вписать без пробелов. |
-| Письма уходят, но не приходят | Попадают в спам у получателя | Попросить отметить «Не спам». Отправленные письма видны в Gmail фотографа в «Отправленных». |
-| `Daily user sending limit exceeded` | Превышен суточный лимит Gmail | Подождать сутки. |
-| Кнопки в письмах ведут на `localhost:3000` | Не задан `NEXT_PUBLIC_SITE_URL` | Задать в Vercel и передеплоить. |
-| Все старые ссылки отмены пишут, что ссылка недействительна | Поменяли `BOOKING_TOKEN_SECRET` | Вернуть прежнее значение, если оно сохранилось; иначе отменять такие брони в календаре вручную и писать посетителям самому. |
+| The booking page shows "write to …" instead of the calendar | A required variable is missing, `BOOKING_WINDOW` has the wrong format, or the site was not redeployed | Compare the variables with the [table](#variables), including the Production environment, and redeploy (step 9, item 4). The check script says `Booking is not configured for Google Calendar` in this case. |
+| The calendar is on the page, but the free hours do not load | The site cannot read the calendars | Find the error text in Vercel → "Logs" and look it up below. |
+| `Google Calendar API has not been used in project … or it is disabled` | The API is not enabled, or is enabled in another project | Step 2, in the same project as the service account. Wait a couple of minutes after enabling. |
+| `Google token request failed: … invalid_grant` and `Invalid JWT Signature` | The key was deleted in Google Cloud or the wrong one was copied | Create a new key (step 3, item 7) and replace `BOOKING_GOOGLE_PRIVATE_KEY`. |
+| `Google token request failed: … invalid_grant` and `Token must be a short-lived token` | The computer's clock is off | Turn on automatic time in the system settings. |
+| `DECODER routines::unsupported`, `PEM`, `bad base64` and the like | The private key was copied partly or with extra quotes | Copy `private_key` again, from `-----BEGIN` to `-----END PRIVATE KEY-----\n`. In Vercel without quotes, in `.env.local` in double quotes. |
+| `Google token request failed: … invalid_client` / `account not found` | A typo in `BOOKING_GOOGLE_CLIENT_EMAIL`, or the service account was deleted | Copy `client_email` from the JSON file again. |
+| `Not Found` when reading or creating a reservation | The Bookings calendar is not shared with the service account, or `BOOKING_CALENDAR_ID` is wrong | Step 4: check the e-mail under "Share with specific people or groups" and copy the ID again. |
+| `You need to have writer access to this calendar` / `Forbidden` | Bookings is shared view-only | Step 4, item 7: change the permission to "Make changes to events". |
+| `Free/busy query failed for calendar …: notFound` | This own calendar is not shared with the service account, or the ID is wrong | Step 5 for this calendar, or remove it from `BOOKING_BLOCKING_CALENDAR_IDS`. |
+| A time is free although the calendar has an event | The calendar is not in `BOOKING_BLOCKING_CALENDAR_IDS`, or the event is "Show as: Free" | Add the ID (step 5) or change the event's "Show as" to "Busy". |
+| `Invalid login: 535-5.7.8 Username and Password not accepted` | The app password is wrong, has spaces or was revoked, or `BOOKING_GMAIL_ADDRESS` is a different account | Step 6: create a new app password and enter it without spaces. |
+| E-mails are sent but never arrive | They land in the recipient's spam | Ask them to mark it "Not spam". Sent e-mails are visible in the photographer's Gmail under "Sent". |
+| `Daily user sending limit exceeded` | The daily Gmail limit is exceeded | Wait a day. |
+| The buttons in the e-mails lead to `localhost:3000` | `NEXT_PUBLIC_SITE_URL` is not set | Set it in Vercel and redeploy. |
+| Every old cancellation link says the link is invalid | `BOOKING_TOKEN_SECRET` was changed | Restore the old value if you still have it; otherwise cancel such reservations in the calendar by hand and write to the visitors yourself. |
 
-## Переменные
+## Variables
 
-| Переменная | Что это | Откуда |
+| Variable | What it is | Where it comes from |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Обязательно на сайте. Адрес сайта без `/` в конце, например `https://example.pl`. Из него строятся кнопки в письмах (отмена брони, «записаться снова»), ссылки для Google и превью в мессенджерах. Без неё ссылки в письмах ведут на `http://localhost:3000` и у клиентов не открываются. На компьютере её можно не задавать. | Адрес сайта на Vercel: «Settings» → «Domains». |
-| `BOOKING_GOOGLE_CLIENT_EMAIL` | Обязательно. E-mail сервисного аккаунта. | `client_email` из JSON-ключа (шаг 3). |
-| `BOOKING_GOOGLE_PRIVATE_KEY` | Обязательно. Приватный ключ сервисного аккаунта, одной строкой с `\n`. | `private_key` из JSON-ключа (шаг 3). |
-| `BOOKING_CALENDAR_ID` | Обязательно. Календарь Bookings, куда сайт пишет брони. | «Идентификатор календаря» (шаг 4). |
-| `BOOKING_BLOCKING_CALENDAR_IDS` | Обязательно. Свои календари, события которых закрывают время, через запятую. | «Идентификатор календаря» каждого (шаг 5). |
-| `BOOKING_WINDOW` | Необязательно. Дневное окно записи в виде `ЧЧ:ММ-ЧЧ:ММ`, по варшавскому времени. Без неё — `08:00-22:00`. | [Как закрывать время](#как-закрывать-время). |
-| `BOOKING_GMAIL_ADDRESS` | Обязательно. Gmail-адрес, с которого уходят письма. | Шаг 6. |
-| `BOOKING_GMAIL_APP_PASSWORD` | Обязательно. Пароль приложения для этого адреса, 16 букв без пробелов. | Шаг 6. |
-| `BOOKING_NOTIFY_EMAIL` | Необязательно. Куда слать уведомления фотографу. Без неё — на `BOOKING_GMAIL_ADDRESS`. | Любой адрес. |
-| `BOOKING_TOKEN_SECRET` | Обязательно. Секрет, которым подписываются ссылки отмены. Если его поменять, все уже разосланные ссылки отмены перестанут работать. | Шаг 7. |
-| `BOOKING_TELEGRAM_BOT_TOKEN` | Необязательно, пока не используется. Токен бота. | Шаг 8. |
-| `BOOKING_TELEGRAM_CHAT_ID` | Необязательно, пока не используется. Chat id фотографа. | Шаг 8. |
-| `BOOKING_FAKE` | Только для автотестов. Подменяет календарь и почту ненастоящими. **Никогда не задавать в Vercel.** | — |
+| `NEXT_PUBLIC_SITE_URL` | Required on the site. The site address without a trailing `/`, for example `https://example.pl`. It builds the buttons in the e-mails (cancel the reservation, "book again"), the links for Google and the link previews in messengers. Without it the e-mail links lead to `http://localhost:3000` and do not open for clients. It can be left out on a computer. | The site address on Vercel: "Settings" → "Domains". |
+| `BOOKING_GOOGLE_CLIENT_EMAIL` | Required. The service account's e-mail. | `client_email` from the JSON key (step 3). |
+| `BOOKING_GOOGLE_PRIVATE_KEY` | Required. The service account's private key, one line with `\n`. | `private_key` from the JSON key (step 3). |
+| `BOOKING_CALENDAR_ID` | Required. The Bookings calendar the site writes reservations to. | "Calendar ID" (step 4). |
+| `BOOKING_BLOCKING_CALENDAR_IDS` | Required. Your own calendars whose events block time, comma-separated. | The "Calendar ID" of each (step 5). |
+| `BOOKING_WINDOW` | Optional. The daily booking window as `HH:MM-HH:MM`, Warsaw time. Defaults to `08:00-22:00`. | [Blocking time](#blocking-time). |
+| `BOOKING_GMAIL_ADDRESS` | Required. The Gmail address the e-mails are sent from. | Step 6. |
+| `BOOKING_GMAIL_APP_PASSWORD` | Required. The app password for that address, 16 letters without spaces. | Step 6. |
+| `BOOKING_NOTIFY_EMAIL` | Optional. Where the photographer's notifications go. Defaults to `BOOKING_GMAIL_ADDRESS`. | Any address. |
+| `BOOKING_TOKEN_SECRET` | Required. The secret that signs cancellation links. Changing it breaks every cancellation link already sent. | Step 7. |
+| `BOOKING_TELEGRAM_BOT_TOKEN` | Optional, not used yet. The bot token. | Step 8. |
+| `BOOKING_TELEGRAM_CHAT_ID` | Optional, not used yet. The photographer's chat id. | Step 8. |
+| `BOOKING_FAKE` | Automated tests only. Replaces the calendar and mail with fakes. **Never set it in Vercel.** | — |
 
-Пока не заполнены все обязательные переменные, страница записи показывает вместо календаря предложение написать на контактный e-mail сайта. Сборка от этого не ломается.
+Until every required variable is set, the booking page shows an invitation to write to the site's contact e-mail instead of the calendar. The build does not fail because of it.
 
-## Безопасность и замена ключей
+## Security and replacing keys
 
-- **Кто что видит.** Сервисный аккаунт видит в своих календарях фотографа только «занят с … до …», без названий и подробностей. В Bookings он видит и меняет всё — поэтому туда не стоит класть личные события с подробностями.
-- **Ключ сервисного аккаунта утёк или потерян.** Google Cloud → «IAM и администрирование» → «Сервисные аккаунты» → аккаунт → «Ключи»: создать новый ключ JSON, вписать его `private_key` в Vercel, передеплоить, проверить запись — и после этого удалить старый ключ значком корзины в том же списке. Пока старый не удалён, он продолжает работать.
-- **Пароль приложения утёк или больше не нужен.** https://myaccount.google.com/apppasswords → удалить его. Сайт перестанет отправлять письма, пока не вписан новый. Смена основного пароля Google тоже отзывает все пароли приложений — после неё нужно создать новый и вписать в Vercel.
-- **Полностью отключить сайт от календарей.** Убрать сервисный аккаунт из «Доступ для отдельных пользователей и групп» в Bookings и во всех своих календарях. Страница записи начнёт показывать ошибку; чтобы вместо неё был текст «напишите нам», удалить в Vercel переменные `BOOKING_*` и передеплоить.
-- **Чего не делать:** переименовывать или удалять календарь Bookings, менять его идентификатор, копировать события броней между календарями, менять `BOOKING_TOKEN_SECRET`, пока есть будущие брони.
+- **Who sees what.** In the photographer's own calendars the service account sees only "busy from … to …", without titles or details. In Bookings it sees and changes everything, so do not put personal events with details there.
+- **The service account key leaked or was lost.** Google Cloud → "IAM & Admin" → "Service Accounts" → the account → "Keys": create a new JSON key, put its `private_key` into Vercel, redeploy, check booking, and only then delete the old key with the trash icon in the same list. Until the old key is deleted, it keeps working.
+- **The app password leaked or is no longer needed.** https://myaccount.google.com/apppasswords → delete it. The site stops sending e-mail until a new one is set. Changing the main Google password also revokes every app password; after that, create a new one and put it into Vercel.
+- **Disconnecting the site from the calendars completely.** Remove the service account under "Share with specific people or groups" in Bookings and in all your own calendars. The booking page will start showing an error; to show "write to us" instead, delete the `BOOKING_*` variables in Vercel and redeploy.
+- **Do not**: rename or delete the Bookings calendar, change its ID, copy reservation events between calendars, or change `BOOKING_TOKEN_SECRET` while there are future reservations.
